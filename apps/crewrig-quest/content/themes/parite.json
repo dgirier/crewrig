@@ -1,0 +1,137 @@
+{
+  "id": "parite",
+  "title": "Parité multi-CLI",
+  "description": "Symétrie entre les quatre CLI, matrice de support et preuve des écarts acceptés.",
+  "questions": [
+    {
+      "id": "parite-01",
+      "text": "Que dit la règle critique sur l'asymétrie entre CLI ?",
+      "choices": [
+        "Une asymétrie est tolérée si elle est temporaire",
+        "Seul Claude Code doit être complet",
+        "Chaque CLI peut évoluer à son rythme sans trace",
+        "L'asymétrie silencieuse est interdite"
+      ],
+      "answer": 3,
+      "explanation": "Les fonctionnalités sont implémentées symétriquement sur les quatre CLI ; tout écart doit être explicite et justifié.",
+      "source": "docs/what-is-crewrig.md"
+    },
+    {
+      "id": "parite-02",
+      "text": "Que faut-il fournir pour accepter un écart de parité sur un CLI ?",
+      "choices": [
+        "Un accord oral de l'équipe",
+        "Une estimation de la charge de travail",
+        "Une preuve concrète que le mécanisme n'existe pas dans le CLI cible",
+        "Rien : un commentaire dans le code suffit"
+      ],
+      "answer": 2,
+      "explanation": "Chaque écart exige une preuve concrète de l'absence du mécanisme dans l'outil visé, pas une simple supposition.",
+      "source": "docs/concepts.md"
+    },
+    {
+      "id": "parite-03",
+      "text": "Quel document recense chaque point d'intégration propre à un CLI ?",
+      "choices": [
+        "Le fichier `LICENSE`",
+        "La matrice de support CLI (`docs/cli-matrix.md`)",
+        "Le `Taskfile.yml`",
+        "Le `package.json`"
+      ],
+      "answer": 1,
+      "explanation": "La matrice liste les points d'intégration, les contrôles de parité et les preuves d'écart acceptés.",
+      "source": "docs/cli-matrix.md"
+    },
+    {
+      "id": "parite-04",
+      "text": "Comment régénère-t-on `docs/cli-matrix.md` ?",
+      "choices": [
+        "Avec `task cli-matrix:build`, à partir des sources de `docs/cli-matrix/` ; on ne l'édite pas à la main",
+        "En l'éditant directement",
+        "Avec `task build-components`",
+        "Il est régénéré par Claude Code à chaque session"
+      ],
+      "answer": 0,
+      "explanation": "Le fichier est généré : on modifie les lignes sources sous `docs/cli-matrix/` puis on reconstruit, dans le même diff.",
+      "source": "docs/cli-matrix.md"
+    },
+    {
+      "id": "parite-05",
+      "text": "Lequel de ces outils n'est PAS l'un des quatre CLI pris en charge ?",
+      "choices": [
+        "Gemini CLI",
+        "GitHub Copilot CLI",
+        "Antigravity CLI",
+        "Cursor"
+      ],
+      "answer": 3,
+      "explanation": "Les quatre CLI pris en charge sont Claude Code, Gemini CLI, GitHub Copilot CLI et Antigravity CLI.",
+      "source": "docs/introduction.md"
+    },
+    {
+      "id": "parite-06",
+      "text": "Quel est le fichier d'entrée de Claude Code, qui réexporte `AGENTS.md` ?",
+      "choices": [
+        ".github/copilot-instructions.md",
+        ".agents/ANTIGRAVITY.md",
+        "`CLAUDE.md`",
+        ".gemini/GEMINI.md"
+      ],
+      "answer": 2,
+      "explanation": "Chaque CLI a son point d'entrée : `CLAUDE.md` pour Claude Code, `.github/copilot-instructions.md` pour Copilot, `.agents/ANTIGRAVITY.md` pour Antigravity.",
+      "source": "docs/cli-matrix.md"
+    },
+    {
+      "id": "parite-07",
+      "text": "Quelle racine de configuration de workspace GitHub Copilot CLI utilise-t-il ?",
+      "choices": [
+        "`.copilot/` uniquement",
+        "Aucune racine unique : `.github/copilot/`, `.github/skills/` et `.github/agents/` sont lus indépendamment",
+        "`.agents/`",
+        "`.claude/`"
+      ],
+      "answer": 1,
+      "explanation": "La configuration de Copilot est volontairement répartie entre plusieurs chemins frères.",
+      "source": "docs/cli-matrix.md"
+    },
+    {
+      "id": "parite-08",
+      "text": "Qu'impose une PR qui touche un point d'intégration propre à un CLI ?",
+      "choices": [
+        "Mettre à jour la ligne source de la matrice et reconstruire `docs/cli-matrix.md` dans le même diff",
+        "Rien : la matrice est mise à jour chaque mois",
+        "Ouvrir une issue de suivi séparée",
+        "Prévenir les autres équipes par message"
+      ],
+      "answer": 0,
+      "explanation": "Une dérive de la matrice est un bug de parité : la mise à jour est obligatoire dans la PR elle-même.",
+      "source": "AGENTS.md"
+    },
+    {
+      "id": "parite-09",
+      "text": "Quelle commande déploie le contexte de CrewRig pour Claude Code ?",
+      "choices": [
+        "`task setup-gemini-interactive`",
+        "`task build-components`",
+        "`task cli-matrix:build`",
+        "`task setup-claude-interactive`"
+      ],
+      "answer": 3,
+      "explanation": "Chaque CLI a son entrée de setup : `setup-claude-interactive`, `setup-gemini-interactive`, `setup-copilot-interactive`, `setup-antigravity-interactive`.",
+      "source": "README.md"
+    },
+    {
+      "id": "parite-10",
+      "text": "Quelle racine de configuration Gemini CLI utilise-t-il dans le dépôt ?",
+      "choices": [
+        ".claude/",
+        ".agents/",
+        "`.gemini/`",
+        ".github/copilot/"
+      ],
+      "answer": 2,
+      "explanation": "Les sorties compilées sont `.claude/`, `.gemini/`, `.github/` et `.agents/`.",
+      "source": "docs/cli-matrix.md"
+    }
+  ]
+}

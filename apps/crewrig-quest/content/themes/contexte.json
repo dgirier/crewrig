@@ -1,0 +1,137 @@
+{
+  "id": "contexte",
+  "title": "Fichiers de contexte en couches",
+  "description": "Les fichiers de contexte numérotés, leur ordre de priorité et leur déploiement dans chaque CLI.",
+  "questions": [
+    {
+      "id": "contexte-01",
+      "text": "Quel fichier source porte la priorité 00 et définit l'identité et les valeurs de l'agent ?",
+      "choices": [
+        "`config/ORGANIZATION.md`",
+        "`config/SOUL.md`",
+        "`config/PROFILE.md`",
+        "`config/TOOLS.md`"
+      ],
+      "answer": 1,
+      "explanation": "La priorité 00 est `config/SOUL.md` : l'identité et les valeurs de l'agent, chargées en premier.",
+      "source": "docs/concepts.md"
+    },
+    {
+      "id": "contexte-02",
+      "text": "À quoi sert le fichier de priorité 10, `config/level/<LEVEL>.md` ?",
+      "choices": [
+        "À adapter les conseils à l'ancienneté de l'utilisateur",
+        "À décrire les pratiques de l'équipe",
+        "À déclarer les serveurs MCP",
+        "À définir la politique de sécurité de l'organisation"
+      ],
+      "answer": 0,
+      "explanation": "Le fichier `level` est le contexte de séniorité : un expert et un junior n'ont pas besoin du même accompagnement.",
+      "source": "docs/concepts.md"
+    },
+    {
+      "id": "contexte-03",
+      "text": "Quel fichier de contexte décrit les pratiques et normes d'une équipe ?",
+      "choices": [
+        "`config/PROFILE.md` (priorité 30)",
+        "`config/expertise/<ROLE>.md` (priorité 40)",
+        "`config/SOUL.md` (priorité 00)",
+        "`config/teams/<TEAM>.md` (priorité 50)"
+      ],
+      "answer": 3,
+      "explanation": "Les équipes sont à la priorité 50 ; l'expertise technique d'un rôle est à la 40 et les informations personnelles à la 30.",
+      "source": "docs/concepts.md"
+    },
+    {
+      "id": "contexte-04",
+      "text": "Que contient `artifacts/core/rules/60-tools.md`, déployé à la priorité 60 ?",
+      "choices": [
+        "Les informations personnelles de l'utilisateur",
+        "Les politiques de l'organisation",
+        "L'architecture de mémoire et les règles d'outils du framework",
+        "La liste des membres de l'équipe"
+      ],
+      "answer": 2,
+      "explanation": "Ce fichier est du contenu amont, pas un modèle : mémoire en trois paliers, protocole MemPalace, boucle de harness, Sequential Thinking.",
+      "source": "docs/layers.md"
+    },
+    {
+      "id": "contexte-05",
+      "text": "Quel fichier de priorité 65 porte les consignes d'outils propres à l'organisation ?",
+      "choices": [
+        "`config/ORGANIZATION.md`",
+        "`config/TOOLS.md`",
+        "`config/SOUL.md`",
+        "`artifacts/core/rules/60-tools.md`"
+      ],
+      "answer": 1,
+      "explanation": "`config/TOOLS.md` complète les règles du framework (priorité 60) sans les dupliquer : préférences d'outillage, serveurs MCP propres à l'organisation, workflows.",
+      "source": "docs/adoption-guide.md"
+    },
+    {
+      "id": "contexte-06",
+      "text": "Dans quel répertoire Claude Code lit-il les fichiers de contexte déployés ?",
+      "choices": [
+        "`~/.claude/rules/`",
+        "`~/.gemini/`",
+        "`~/.copilot/instructions/`",
+        "`.github/skills/`"
+      ],
+      "answer": 0,
+      "explanation": "Claude Code combine les fichiers de `~/.claude/rules/` de façon additive, chacun avec son préfixe numérique.",
+      "source": "docs/concepts.md"
+    },
+    {
+      "id": "contexte-07",
+      "text": "Comment Gemini CLI reçoit-il ses fichiers de contexte ?",
+      "choices": [
+        "Dans `~/.claude/rules/`",
+        "Sous forme de fichiers `*.instructions.md`",
+        "Concaténés dans un unique fichier `CLAUDE.md`",
+        "Directement dans `~/.gemini/`, avec un préfixe numérique et sans sous-dossier `rules/`"
+      ],
+      "answer": 3,
+      "explanation": "Gemini CLI n'a pas de répertoire `rules/` : les fichiers numérotés (par exemple `00_SOUL.md`) vont dans `~/.gemini/` et la priorité est appliquée par l'ordre numérique.",
+      "source": "docs/adoption-guide.md"
+    },
+    {
+      "id": "contexte-08",
+      "text": "Sous quelle forme GitHub Copilot CLI applique-t-il les fichiers de contexte ?",
+      "choices": [
+        "Un seul fichier `AGENTS.md` fusionné",
+        "Des fichiers `.toml` dans `~/.gemini/`",
+        "Des fichiers `*.instructions.md` dans `~/.copilot/instructions/`",
+        "Des liens symboliques vers `config/`"
+      ],
+      "answer": 2,
+      "explanation": "Copilot CLI utilise la convention `*.instructions.md` (par exemple `00-soul.instructions.md`) dans `~/.copilot/instructions/`.",
+      "source": "docs/adoption-guide.md"
+    },
+    {
+      "id": "contexte-09",
+      "text": "Quel est le mode de déploiement par défaut des fichiers de contexte, et pourquoi ?",
+      "choices": [
+        "Le lien symbolique, pour refléter les modifications en direct",
+        "La copie, pour empêcher l'empoisonnement du contexte par une branche malveillante",
+        "La copie, parce que les liens symboliques sont interdits par les CLI",
+        "Le lien symbolique, parce qu'il est plus rapide"
+      ],
+      "answer": 1,
+      "explanation": "Avec la copie, un changement de branche ne modifie pas silencieusement le contexte des CLI. Le lien symbolique reste disponible pour le développement, avec un avertissement de sécurité.",
+      "source": "README.md"
+    },
+    {
+      "id": "contexte-10",
+      "text": "Qui est propriétaire des chemins de la couche `core` ?",
+      "choices": [
+        "Le projet CrewRig amont : les organisations adoptantes ne les modifient pas",
+        "L'organisation adoptante, qui les édite librement",
+        "Chaque développeur, dans son poste local",
+        "Personne : ils sont générés à l'installation"
+      ],
+      "answer": 0,
+      "explanation": "Les chemins `core` appartiennent à l'amont ; la couche `overlay` appartient à l'organisation. Cette frontière permet de forker puis de resynchroniser sans conflit.",
+      "source": "docs/layers.md"
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "id": "sdd",
+  "title": "Cycle de vie SDD",
+  "description": "SPECS, PLAN, DEV, REVIEW : classes de constats, boucle rétroactive, terminaison et paliers de complexité.",
+  "questions": [
+    {
+      "id": "sdd-01",
+      "text": "Dans quel ordre s'enchaînent les étapes du cycle de vie SDD ?",
+      "choices": [
+        "SPECS, PLAN, DEV, REVIEW",
+        "PLAN, SPECS, DEV, REVIEW",
+        "SPECS, DEV, PLAN, REVIEW",
+        "DEV, REVIEW, SPECS, PLAN"
+      ],
+      "answer": 0,
+      "explanation": "SPECS (le QUOI), PLAN (le COMMENT), DEV (l'implémentation) puis REVIEW, qui boucle vers l'étape adaptée à chaque constat.",
+      "source": "docs/adr/0010-spec-plan-review-lifecycle.md"
+    },
+    {
+      "id": "sdd-02",
+      "text": "Vers quelle étape un constat de classe `tech` renvoie-t-il ?",
+      "choices": [
+        "PLAN",
+        "SPECS",
+        "Il ne renvoie nulle part : il est ignoré",
+        "DEV"
+      ],
+      "answer": 3,
+      "explanation": "Un constat `tech` est un défaut d'implémentation : l'intention et la conception sont bonnes, la réalisation est fautive. On corrige en DEV.",
+      "source": "docs/retroactive-loop.md"
+    },
+    {
+      "id": "sdd-03",
+      "text": "Vers quelle étape un constat de classe `arch` renvoie-t-il ?",
+      "choices": [
+        "DEV",
+        "SPECS",
+        "PLAN",
+        "MERGE"
+      ],
+      "answer": 2,
+      "explanation": "Un constat `arch` est un défaut de conception : la spécification est correcte mais le design choisi ne peut pas la réaliser proprement. On refait le PLAN, puis le DEV.",
+      "source": "docs/retroactive-loop.md"
+    },
+    {
+      "id": "sdd-04",
+      "text": "Que provoque un constat de classe `spec` ?",
+      "choices": [
+        "Un simple correctif dans la branche courante",
+        "Un retour à SPECS, avec une nouvelle PR de spécification delta",
+        "Un retour direct à REVIEW",
+        "L'abandon du ticket"
+      ],
+      "answer": 1,
+      "explanation": "La spécification elle-même ne tranche pas un point devenu important : on l'amende par une delta-spec, puis on refait PLAN et DEV.",
+      "source": "docs/retroactive-loop.md"
+    },
+    {
+      "id": "sdd-05",
+      "text": "À quelles conditions le cycle de vie se termine-t-il (fusion) ?",
+      "choices": [
+        "Verdict APPROVE, zéro constat de toute classe et CI verte sur le dernier commit relu",
+        "Dès que la CI est verte",
+        "Dès que le développeur déclare avoir fini",
+        "Dès qu'il ne reste que des constats de classe `tech`"
+      ],
+      "answer": 0,
+      "explanation": "Une passe de REVIEW complète doit ne produire aucun constat (`tech`, `arch` ni `spec`), avec un verdict APPROVE et une CI verte.",
+      "source": "docs/adr/0010-spec-plan-review-lifecycle.md"
+    },
+    {
+      "id": "sdd-06",
+      "text": "Après combien d'itérations la boucle de revue s'arrête-t-elle sans terminaison ?",
+      "choices": [
+        "Deux",
+        "Dix",
+        "Elle ne s'arrête jamais",
+        "Cinq (réglable dans le frontmatter de la spec)"
+      ],
+      "answer": 3,
+      "explanation": "À la cinquième itération sans terminaison, l'orchestrateur publie un résumé sur le journal de bord et alerte l'utilisateur, même en mode AUTO.",
+      "source": "docs/retroactive-loop.md"
+    },
+    {
+      "id": "sdd-07",
+      "text": "En cas d'hésitation entre deux classes de constat, que prescrit la règle de désambiguïsation ?",
+      "choices": [
+        "Choisir la classe la plus proche du code (`tech`)",
+        "Tirer la classe au sort",
+        "Choisir la classe la plus en amont (`tech` < `arch` < `spec`)",
+        "Ne pas classer et ignorer le constat"
+      ],
+      "answer": 2,
+      "explanation": "Un constat `tech` mal routé coûte une relance d'équipe ; un constat `spec` mal routé coûte tout le cycle aval. On remonte donc en cas de doute.",
+      "source": "docs/adr/0010-spec-plan-review-lifecycle.md"
+    },
+    {
+      "id": "sdd-08",
+      "text": "Quelle équipe réalise le DEV d'un ticket de palier `small` ?",
+      "choices": [
+        "L'orchestrateur seul, en ligne",
+        "`developer`, `pr-logbook` et `pr-reviewer`",
+        "Une équipe dirigée par `architect` avec décomposition en sous-specs",
+        "Les gabarits 1, 2 et 3 complets avec `tester`"
+      ],
+      "answer": 1,
+      "explanation": "Le palier `trivial` est traité en ligne ; `small` a un worktree et trois agents ; `standard` utilise les gabarits d'équipe ; `large` est décomposé en sous-specs par `architect`.",
+      "source": "docs/adr/0010-spec-plan-review-lifecycle.md"
+    },
+    {
+      "id": "sdd-09",
+      "text": "Quel est le mode d'interaction par défaut du cycle de vie ?",
+      "choices": [
+        "INTERMEDIATE",
+        "FULL",
+        "MINIMAL",
+        "AUTO"
+      ],
+      "answer": 0,
+      "explanation": "Les quatre modes (FULL, INTERMEDIATE, MINIMAL, AUTO) règlent le contrôle de l'utilisateur, pas l'exécution : les quatre étapes tournent toujours. INTERMEDIATE est le défaut.",
+      "source": "docs/interaction-modes.md"
+    },
+    {
+      "id": "sdd-10",
+      "text": "Quel est le plafond de révisions du PLAN pour un ticket de palier `standard` ?",
+      "choices": [
+        "Une",
+        "Cinq",
+        "Aucun plafond",
+        "Deux"
+      ],
+      "answer": 3,
+      "explanation": "Plafonds de révision du PLAN : trivial 1, small 1, standard 2, large 5.",
+      "source": "docs/adr/0010-spec-plan-review-lifecycle.md"
+    }
+  ]
+}

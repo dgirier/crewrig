@@ -1,0 +1,137 @@
+{
+  "id": "apercu",
+  "title": "Vue d'ensemble et cinq piliers",
+  "description": "Ce qu'est CrewRig, les cinq piliers du framework et la façon dont il se développe lui-même.",
+  "questions": [
+    {
+      "id": "apercu-01",
+      "text": "Qu'est-ce que CrewRig ?",
+      "choices": [
+        "Un cadre de configuration centralisé pour Gemini CLI, Claude Code, GitHub Copilot CLI et Antigravity CLI",
+        "Un framework web Java pour écrire des microservices",
+        "Un cinquième assistant IA en ligne de commande, concurrent de Claude Code",
+        "Un gestionnaire de paquets pour les extensions de VS Code"
+      ],
+      "answer": 0,
+      "explanation": "CrewRig est un framework de configuration centralisé : une source de vérité unique compilée dans la disposition attendue par chacun des quatre outils.",
+      "source": "docs/what-is-crewrig.md"
+    },
+    {
+      "id": "apercu-02",
+      "text": "Combien de piliers soutiennent CrewRig ?",
+      "choices": [
+        "Trois",
+        "Quatre",
+        "Sept",
+        "Cinq"
+      ],
+      "answer": 3,
+      "explanation": "Les cinq piliers sont : contexte en couches, mémoire partagée, création et partage de skills/agents/commandes, harness engineering et parité multi-CLI.",
+      "source": "docs/what-is-crewrig.md"
+    },
+    {
+      "id": "apercu-03",
+      "text": "Laquelle de ces propositions n'est PAS l'un des cinq piliers de CrewRig ?",
+      "choices": [
+        "Le système de contexte en couches",
+        "La mémoire partagée entre outils",
+        "L'hébergement managé dans le cloud des agents",
+        "La parité multi-CLI"
+      ],
+      "answer": 2,
+      "explanation": "CrewRig est un cadre local de configuration : il n'héberge aucun agent. Les cinq piliers sont le contexte en couches, la mémoire partagée, les skills/agents/commandes, le harness engineering et la parité multi-CLI.",
+      "source": "docs/introduction.md"
+    },
+    {
+      "id": "apercu-04",
+      "text": "Où les skills, agents et commandes sont-ils rédigés ?",
+      "choices": [
+        "Dans le dossier de configuration de chaque CLI, un par un",
+        "Dans `artifacts/`, la zone à source unique",
+        "Dans `config/teams/`",
+        "Directement dans `.claude/skills/`"
+      ],
+      "answer": 1,
+      "explanation": "`artifacts/` est la zone à source unique : on écrit un composant une fois, puis le build le compile pour les quatre CLI.",
+      "source": "docs/what-is-crewrig.md"
+    },
+    {
+      "id": "apercu-05",
+      "text": "Quel script compile les sources de `artifacts/` en sorties pour les quatre CLI ?",
+      "choices": [
+        "`scripts/build-components.ts`",
+        "`scripts/sync-from-upstream.ts`",
+        "`scripts/setup-claude-interactive.ts`",
+        "`scripts/ticket-pickup.ts`"
+      ],
+      "answer": 0,
+      "explanation": "`scripts/build-components.ts` génère les sorties de chaque CLI à partir de la source unique ; les scripts de setup, eux, déploient le contexte dans le répertoire utilisateur.",
+      "source": "docs/what-is-crewrig.md"
+    },
+    {
+      "id": "apercu-06",
+      "text": "Quels agents composent l'équipe interne qui développe CrewRig avec ses propres mécanismes ?",
+      "choices": [
+        "planner, coder, deployer et monitor",
+        "spec-author uniquement",
+        "Une équipe externe de prestataires",
+        "architect, developer, tester, pr-logbook et pr-reviewer"
+      ],
+      "answer": 3,
+      "explanation": "CrewRig se développe lui-même : l'équipe interne utilise les mêmes skills et agents que ceux livrés avec le framework. Le workflow de développement est le produit en action.",
+      "source": "README.md"
+    },
+    {
+      "id": "apercu-07",
+      "text": "Quelle suite d'étapes résume le cycle de vie du travail non trivial dans CrewRig ?",
+      "choices": [
+        "BUILD, TEST, DEPLOY, MONITOR",
+        "IDEA, CODE, MERGE, RELEASE",
+        "SPECS, PLAN, DEV, REVIEW",
+        "DESIGN, DEV, QA, PROD"
+      ],
+      "answer": 2,
+      "explanation": "Le travail non trivial suit SPECS → PLAN → DEV → REVIEW ; la revue renvoie les constats vers l'étape qui peut les corriger.",
+      "source": "docs/introduction.md"
+    },
+    {
+      "id": "apercu-08",
+      "text": "Que fait la boucle de harness engineering ?",
+      "choices": [
+        "Elle chiffre le coût en jetons de chaque session",
+        "Elle transforme les frictions rencontrées par les agents en tickets suivis",
+        "Elle teste automatiquement le code des utilisateurs",
+        "Elle synchronise les dépôts entre organisations"
+      ],
+      "answer": 1,
+      "explanation": "Les agents étiquettent les frictions avec la skill `harness-report` ; la skill `harness-curator` les regroupe en tickets GitHub exploitables.",
+      "source": "docs/harness-engineering.md"
+    },
+    {
+      "id": "apercu-09",
+      "text": "Où CrewRig se place-t-il dans le flux de travail de l'utilisateur ?",
+      "choices": [
+        "Entre l'utilisateur et les assistants IA : on édite les sources une fois, des scripts les déploient",
+        "Dans le cloud, à la place des assistants IA",
+        "À l'intérieur du code applicatif de chaque projet",
+        "Uniquement dans la CI, jamais sur le poste du développeur"
+      ],
+      "answer": 0,
+      "explanation": "CrewRig se situe entre vous et les assistants : les scripts de build et de setup déploient les sources dans les répertoires de chaque outil.",
+      "source": "docs/introduction.md"
+    },
+    {
+      "id": "apercu-10",
+      "text": "Quel document faut-il suivre pas à pas pour adopter CrewRig dans son organisation ?",
+      "choices": [
+        "Le fichier `LICENSE`",
+        "`docs/spec-format.md`",
+        "Le journal de bord du ticket courant",
+        "Le guide d'adoption (`docs/adoption-guide.md`)"
+      ],
+      "answer": 3,
+      "explanation": "Le guide d'adoption couvre le fork, la configuration de la surcouche, le build, le déploiement vers les CLI et la synchronisation avec l'amont.",
+      "source": "README.md"
+    }
+  ]
+}

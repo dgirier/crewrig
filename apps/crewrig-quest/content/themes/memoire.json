@@ -1,0 +1,137 @@
+{
+  "id": "memoire",
+  "title": "Mémoire (MemPalace)",
+  "description": "Les trois paliers de mémoire, MemPalace et le balayage de début de session.",
+  "questions": [
+    {
+      "id": "memoire-01",
+      "text": "Quels sont les trois paliers de la mémoire de CrewRig ?",
+      "choices": [
+        "Cache, disque et réseau",
+        "Redis, PostgreSQL et Kafka",
+        "Sequential Thinking, MemPalace et Obsidian",
+        "Session, projet et organisation"
+      ],
+      "answer": 2,
+      "explanation": "Palier 1 : Sequential Thinking (mémoire de travail). Palier 2 : MemPalace (mémoire d'agent persistante). Palier 3 : Obsidian (second cerveau de l'utilisateur).",
+      "source": "docs/concepts.md"
+    },
+    {
+      "id": "memoire-02",
+      "text": "Quelle est la portée de la mémoire de travail Sequential Thinking ?",
+      "choices": [
+        "Toutes les sessions et tous les outils",
+        "La session courante uniquement : elle est éphémère",
+        "Le dépôt Git entier",
+        "Le coffre Obsidian de l'utilisateur"
+      ],
+      "answer": 1,
+      "explanation": "Sequential Thinking disparaît avec la session : tout plan qui s'étend sur plusieurs sessions doit être persisté dans MemPalace avant la fin.",
+      "source": "artifacts/core/rules/60-tools.md"
+    },
+    {
+      "id": "memoire-03",
+      "text": "Quel palier rend la mémoire partagée entre Claude Code, Gemini CLI, Copilot CLI et Antigravity CLI ?",
+      "choices": [
+        "MemPalace",
+        "Sequential Thinking",
+        "Obsidian",
+        "Le fichier `AGENTS.md`"
+      ],
+      "answer": 0,
+      "explanation": "MemPalace est lisible et inscriptible depuis les quatre CLI : une décision enregistrée dans Claude Code se retrouve plus tard dans Gemini CLI.",
+      "source": "docs/concepts.md"
+    },
+    {
+      "id": "memoire-04",
+      "text": "Que doit faire l'agent avant d'écrire dans le coffre Obsidian ?",
+      "choices": [
+        "Rien : l'écriture est libre",
+        "Vérifier que MemPalace est disponible",
+        "Créer une branche dédiée",
+        "Demander l'accord explicite de l'utilisateur"
+      ],
+      "answer": 3,
+      "explanation": "Obsidian est le second cerveau de l'utilisateur : la lecture est libre, mais l'écriture exige son consentement explicite.",
+      "source": "artifacts/core/rules/60-tools.md"
+    },
+    {
+      "id": "memoire-05",
+      "text": "Quel appel MemPalace suit le calcul du nom du projet dans le balayage de début de session ?",
+      "choices": [
+        "`mempalace_diary_write`, pour consigner la session",
+        "`mempalace_delete_drawer`, pour nettoyer",
+        "`mempalace_status`, pour énumérer les ailes présentes",
+        "`mempalace_mine`, pour tout réindexer"
+      ],
+      "answer": 2,
+      "explanation": "Le balayage est déterministe : nom du projet, puis `mempalace_status`, puis recherche de reprise, journal de l'agent et graphe de connaissances.",
+      "source": "artifacts/core/rules/60-tools.md"
+    },
+    {
+      "id": "memoire-06",
+      "text": "Comment l'agent retrouve-t-il une tâche en cours laissée par une session ou un outil précédent ?",
+      "choices": [
+        "Il relit tout l'historique de la conversation précédente",
+        "Il cherche `[TASK:ongoing]` dans l'aile du projet, salle `task-handoff`",
+        "Il parcourt l'aile `transcripts` en entier",
+        "Il demande à l'utilisateur de répéter la consigne"
+      ],
+      "answer": 1,
+      "explanation": "La recherche est limitée à une aile et une salle : c'est le chemin canonique et déterministe de reprise entre outils.",
+      "source": "artifacts/core/rules/60-tools.md"
+    },
+    {
+      "id": "memoire-07",
+      "text": "Pourquoi les recherches sémantiques excluent-elles l'aile `transcripts` ?",
+      "choices": [
+        "C'est une archive brute volumineuse dont le bruit noie les vrais résultats",
+        "Elle est chiffrée et illisible",
+        "Elle appartient à un autre utilisateur",
+        "Elle est réservée à l'agent `architect`"
+      ],
+      "answer": 0,
+      "explanation": "Les transcriptions mentionnent souvent `[TASK:ongoing]` à titre de documentation ; sans filtre d'aile, elles écrasent les entrées de reprise réelles.",
+      "source": "artifacts/core/rules/60-tools.md"
+    },
+    {
+      "id": "memoire-08",
+      "text": "Comment un agent doit-il invoquer MemPalace depuis son raisonnement ?",
+      "choices": [
+        "Par la commande shell `mempalace`, plus rapide",
+        "Par des appels HTTP écrits à la main",
+        "Par la lecture directe des fichiers de la base",
+        "Par les outils MCP `mempalace_*`, jamais par la commande shell `mempalace`"
+      ],
+      "answer": 3,
+      "explanation": "Passer par le CLI contournerait le contexte de session, le verrouillage et la piste d'audit du serveur MCP ; le binaire est réservé aux tâches d'administration humaines.",
+      "source": "artifacts/core/rules/60-tools.md"
+    },
+    {
+      "id": "memoire-09",
+      "text": "Que faut-il faire avant la fin d'une session si le travail se poursuit ?",
+      "choices": [
+        "Supprimer le journal de l'agent",
+        "Fermer le ticket sur la forge",
+        "Mettre à jour le tiroir de reprise `[TASK:ongoing]` de l'aile du projet",
+        "Relancer le build des composants"
+      ],
+      "answer": 2,
+      "explanation": "Dernière étape de la session : vider l'état vers MemPalace (tiroir de reprise, journal de l'agent), pour que la session suivante reprenne sans perte.",
+      "source": "artifacts/core/rules/60-tools.md"
+    },
+    {
+      "id": "memoire-10",
+      "text": "Quelle est la première étape de diagnostic face à l'erreur MCP `-32001` (verrou d'écriture refusé) ?",
+      "choices": [
+        "Supprimer le répertoire du palais",
+        "Exécuter `task mempalace:status`",
+        "Réinstaller Node.js",
+        "Relancer le build des composants"
+      ],
+      "answer": 1,
+      "explanation": "La commande révèle si la machine est à moitié convertie (démon partagé actif, CLI encore en stdio) ou face à une collision entre pairs.",
+      "source": "artifacts/core/rules/60-tools.md"
+    }
+  ]
+}
