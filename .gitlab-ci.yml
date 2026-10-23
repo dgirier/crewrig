@@ -2547,6 +2547,19 @@ ticket-pickup:
         - "scripts/tests/ticket-*.test.ts"
         - "scripts/tests/fixtures/ticket-pickup/**"
 
+crewrig-quest:
+  image: node:24
+  script:
+    - "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning apps/crewrig-quest/src/validate-content.ts"
+    - "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --test apps/crewrig-quest/tests/stars.test.ts apps/crewrig-quest/tests/store.test.ts apps/crewrig-quest/tests/content.test.ts apps/crewrig-quest/tests/server.test.ts"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^main$|^release\//'
+      changes:
+        - "apps/crewrig-quest/**"
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH =~ /^main$|^release\//'
+      changes:
+        - "apps/crewrig-quest/**"
+
 playwright-mcp:
   image: node:24
   before_script:

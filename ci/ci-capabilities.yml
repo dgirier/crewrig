@@ -3238,6 +3238,27 @@ capabilities:
     command:
       - node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test scripts/tests/ticket-ownership.test.ts scripts/tests/ticket-pickup.test.ts
 
+  # Spec 0278: the CrewRig Quest serious game — content validation, star rule,
+  # results database, local API and static serving. Node's built-in test runner
+  # and node:sqlite only; no dependency to install.
+  - id: crewrig-quest
+    name: "CrewRig Quest serious game: content check and test suites (spec 0278)"
+    trigger:
+      - on: pull-request
+        branches: [main, "release/**"]
+        paths:
+          - "apps/crewrig-quest/**"
+      - on: push
+        branches: [main, "release/**"]
+        paths:
+          - "apps/crewrig-quest/**"
+    portability: portable
+    requires:
+      runtime: node@24
+    command:
+      - node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning apps/crewrig-quest/src/validate-content.ts
+      - node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --test apps/crewrig-quest/tests/stars.test.ts apps/crewrig-quest/tests/store.test.ts apps/crewrig-quest/tests/content.test.ts apps/crewrig-quest/tests/server.test.ts
+
   # Spec 0245 (issue #1416): the opt-in Playwright MCP registration — the
   # pure entry model, the JSONC scanner (byte parity with gs_strip_jsonc, so
   # jq is required) and the hook-config.ts reader it extends.

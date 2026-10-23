@@ -516,6 +516,21 @@ tasks:
     desc: "Run the ticket-pickup check's suites (model, fake-forge end to end, interleavings), as CI does (spec 0244)"
     cmd: node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test scripts/tests/ticket-ownership.test.ts scripts/tests/ticket-pickup.test.ts
 
+  # Spec 0278: the CrewRig Quest serious game (local, 127.0.0.1 only). Port and
+  # database file are set with CREWRIG_QUEST_PORT and CREWRIG_QUEST_DB.
+  quest:
+    desc: "Start the CrewRig Quest serious game on http://127.0.0.1:4173 (spec 0278); stop it with Ctrl-C"
+    cmds:
+      - node {{.REPO_DIR}}/scripts/lib/node-floor-guard.js
+      - node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning {{.REPO_DIR}}/apps/crewrig-quest/src/main.ts
+
+  # Spec 0278: the exact CI command of the `crewrig-quest` capability.
+  test-quest:
+    desc: "Validate the CrewRig Quest content and run its test suites, as CI does (spec 0278)"
+    cmds:
+      - node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning apps/crewrig-quest/src/validate-content.ts
+      - node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --test apps/crewrig-quest/tests/stars.test.ts apps/crewrig-quest/tests/store.test.ts apps/crewrig-quest/tests/content.test.ts apps/crewrig-quest/tests/server.test.ts
+
   timing-budget:
     desc: "Time a Node.js script against a budget (spec 0240 R13); pass the harness arguments after --"
     cmd: node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/check-timing-budget.ts {{.CLI_ARGS}}
