@@ -1,20 +1,40 @@
 # Crewrig fork configuration.
 #
-# Each fork commits its own values here. The build pipeline reads this file
-# during `task build-components` and substitutes ${UPPERCASED_KEY} placeholders
-# in source files (artifacts/**) with the values below.
+# The build pipeline reads crewrig.config.toml during `task build-components`
+# and substitutes ${UPPERCASED_KEY} placeholders in artifact source files
+# with the values below.
 #
-# Forks targeting an internal mirror typically:
-#   - Keep `canonical_repo` pointing at the upstream they forked from
-#     (audit trail, license trace).
-#   - Override `feedback_repo` so MRs from the harness curator land on
-#     their own internal repo, not the public upstream.
-#
-# `feedback_repo` scopes to ADOPTER-OWNED tiers only (artifacts/community,
-# artifacts/org, extensions/org). Upstream-owned components always route
-# feedback to `canonical_repo`. See artifacts/FORMAT.md (Provenance & Forks).
-#
-# See artifacts/FORMAT.md (Provenance Block) and issue #41 for context.
+# See artifacts/FORMAT.md (Provenance Block) for context on how these
+# values flow into built components.
 
+# canonical_repo — the upstream repository this fork traces back to.
+# Forks should keep this pointing at the upstream they forked from so
+# that the audit trail and license trace remain intact.
+# Replace with your own repo URL only if YOUR repo IS the canonical
+# upstream for this deployment.
 canonical_repo = "https://github.com/crewrig/crewrig"
-feedback_repo  = "https://github.com/crewrig/crewrig"
+
+# feedback_repo — where the harness curator opens friction MRs.
+# Override this with your organization's internal repo so that friction
+# issues land on your own tracker rather than the upstream project.
+# For most adopting orgs this will differ from canonical_repo.
+#
+# Scope: feedback_repo governs ADOPTER-OWNED tiers only (artifacts/community,
+# artifacts/org, extensions/org). Upstream-owned components (artifacts/core,
+# artifacts/library, extensions/core, extensions/library) always route feedback
+# to canonical_repo, regardless of this value — frictions on components you did
+# not author keep flowing to the repo that maintains them. See
+# artifacts/FORMAT.md (Provenance & Forks); enforced by
+# scripts/check-feedback-routing.ts.
+feedback_repo  = "https://github.com/dgirier/crewrig"
+
+# ticket_nudge_days / ticket_grace_days — the stale-lock delays of the
+# ticket-ownership convention (spec 0244 R8, docs/ticket-ownership.md).
+# When an owned ticket shows no activity by its assignee for the nudge delay,
+# another contributor may ask for it in a comment; if the assignee has not
+# answered within the further grace delay, that contributor may take it over
+# openly. Every contributor must read the same values, so set them here, not
+# per machine. Defaults: 14 and 7 days. Positive whole numbers of days only;
+# the ticket-pickup check exits 1 on a malformed value.
+# ticket_nudge_days = "14"
+# ticket_grace_days = "7"

@@ -1,10 +1,10 @@
 # Organization Context
 
-You assist members of **[Organization Name]**.
+You assist members of **SFEIR**.
 
 ## Company Overview
 
-**[Organization Name]** builds and maintains digital products with a focus on
+**SFEIR** builds and maintains digital products with a focus on
 reliability, user experience, and sustainable engineering practices. This
 shared configuration repository centralizes AI assistant settings across all
 teams.
@@ -13,7 +13,7 @@ teams.
 
 - Every contribution must follow the coding standards defined by the relevant
   team and technology stack.
-- Readability and maintainability take priority over cleverness.
+- Readability, simplicity and maintainability take priority over cleverness.
 
 ## Security & Compliance
 
@@ -34,6 +34,6 @@ teams.
 ## Development Workflow
 
 - All development happens on dedicated feature branches.
-- Branch management rules are team-specific.
+- Branch management rules are gitflow based.
 - Code is reviewed and approved before merging.
 - Releases should follow semantic versioning.
