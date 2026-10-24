@@ -4,6 +4,7 @@
 import type {
   AttemptAnswer,
   AttemptResult,
+  CheckRecord,
   Lesson,
   ProgressResponse,
   SddContent,
@@ -78,4 +79,29 @@ export async function completeLesson(lessonId: string): Promise<ProgressResponse
 export async function resetResults(): Promise<void> {
   const data = await request<{ persisted: boolean }>("/api/results", { method: "DELETE" });
   report(data.persisted);
+}
+
+export async function postCheck(
+  lessonId: string,
+  answers: AttemptAnswer[],
+): Promise<ProgressResponse & { result: CheckRecord }> {
+  const data = await request<ProgressResponse & { result: CheckRecord }>(
+    `/api/lessons/${encodeURIComponent(lessonId)}/check`,
+    { method: "POST", headers: JSON_HEADERS, body: JSON.stringify({ answers }) },
+  );
+  report(data.persisted);
+  return data;
+}
+
+export async function putTick(
+  lessonId: string,
+  stepId: string,
+  ticked: boolean,
+): Promise<ProgressResponse> {
+  const data = await request<ProgressResponse>(
+    `/api/lessons/${encodeURIComponent(lessonId)}/checklist/${encodeURIComponent(stepId)}`,
+    { method: "PUT", headers: JSON_HEADERS, body: JSON.stringify({ ticked }) },
+  );
+  report(data.persisted);
+  return data;
 }

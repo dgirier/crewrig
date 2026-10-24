@@ -2,15 +2,16 @@
 // Quiz play: one multiple-choice question at a time, feedback, final result.
 
 import { getTheme, postAttempt } from "./api.ts";
+import { levelBadge } from "./levels.ts";
 import { focusHeading, h, inline, setTitle, stars } from "./dom.ts";
-import type { AttemptAnswer, AttemptResult, Question } from "../src/types.ts";
+import type { AttemptAnswer, AttemptResult, CheckQuestion, Question } from "../src/types.ts";
 
 interface QuizState {
   index: number;
   answers: AttemptAnswer[];
 }
 
-function choiceItem(name: string, q: Question, i: number): HTMLElement {
+export function choiceItem(name: string, q: CheckQuestion, i: number): HTMLElement {
   const id = `${name}-${i}`;
   const input = h("input", { type: "radio", name, id, value: String(i) });
   const label = h("label", { for: id }, [
@@ -33,6 +34,7 @@ function renderQuestion(
   const progress = h("p", { class: "muted", id: "q-progress" }, [
     `Question ${state.index + 1} sur ${questions.length}`,
   ]);
+  const level = h("p", { class: "muted" }, [levelBadge(q.level)]);
   const legend = h("legend", { class: "question-text", id: "q-legend" }, inline(q.text));
   const name = `q-${themeId}-${state.index}`;
   const fieldset = h("fieldset", { class: "choices", "aria-describedby": "q-progress" }, [
@@ -92,7 +94,7 @@ function renderQuestion(
     next.focus();
   });
 
-  root.replaceChildren(heading, progress, form);
+  root.replaceChildren(heading, progress, level, form);
   legend.setAttribute("tabindex", "-1");
   legend.focus();
 }
