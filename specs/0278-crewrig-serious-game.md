@@ -3,7 +3,7 @@ id: "0278"
 slug: crewrig-serious-game
 status: draft
 complexity: standard
-interaction-mode: AUTO
+interaction-mode: INTERMEDIATE
 related-issue: 1
 version: 1.0.0
 ---
@@ -12,7 +12,7 @@ version: 1.0.0
 
 ## Intent
 
-A newcomer, or a team being coached on CrewRig, opens a web page on their own machine and learns the framework by playing. A menu lists quiz themes, each showing the best score reached as up to five stars, five meaning every answer was correct. A learning path walks through the good practices with diagrams of the project architecture, of the foundation setup steps, and of the setup of a new project, and a dedicated section explains the SDD software lifecycle. The whole experience is in French, needs no account and no network, and remembers the player's results between sessions.
+A newcomer to AI coding assistants, a team being coached on CrewRig, or a contributor to the framework opens a web page on their own machine and learns the framework by playing. A menu lists quiz themes, each showing the best score reached as up to five stars, five meaning every answer was correct. A learning path, offered in three tracks matching those audiences, walks through the good practices with diagrams of the project architecture, of the foundation setup steps, and of the setup of a new project. Each lesson ends with a short check, and the setup lessons carry a step-by-step checklist the player ticks off. A dedicated section explains the SDD software lifecycle. The whole experience is in French, needs no account and no network, and remembers the player's results between sessions.
 
 ## Requirements
 
@@ -31,6 +31,9 @@ A newcomer, or a team being coached on CrewRig, opens a web page on their own ma
 13. **R13 (validation of content).** The system SHALL ship an automated check that rejects malformed quiz content: a question without exactly one correct answer, fewer than two choices, a missing explanation, or a theme without questions.
 14. **R14 (robustness).** If the database cannot be opened or written, the system SHALL still let the player play and SHALL tell the player in French that results will not be saved.
 15. **R15 (accessibility).** The interface SHALL be usable with the keyboard alone and SHALL keep text contrast at WCAG 2.1 AA level.
+16. **R16 (audience tracks).** Each lesson and each quiz question SHALL carry one level among discovery (new to AI coding assistants), team (a team adopting CrewRig) and contributor (a contributor to the framework). The learning path SHALL offer one track per level, each track being cumulative of the lower levels, and the player SHALL be able to choose a track at any time without losing progress.
+17. **R17 (lesson check).** A lesson SHALL be marked completed only after the player has answered its short check, of two to three questions, with the correct answer revealed after each; failing the check SHALL NOT block the player from retrying it.
+18. **R18 (guided exercises).** The setup lessons (foundation, new project) SHALL include a step-by-step checklist of the real commands and actions of the framework documentation, whose ticks the player sets and the system remembers. The system SHALL NOT run any command on the player's behalf.
 
 ## Scenarios
 
@@ -83,6 +86,31 @@ When  the player finishes a quiz
 Then  the final screen is shown with a French notice that the result was not saved
 ```
 
+**Scenario:** lesson completion requires its check
+
+```text
+Given the player opened a lesson with a three-question check
+When  the player has not yet answered every question of the check
+Then  the lesson cannot be marked completed
+And   once every question is answered the lesson is marked completed, even if some answers were wrong
+```
+
+**Scenario:** checklist ticks survive a restart
+
+```text
+Given the player ticked two steps of the "new project" checklist
+When  the application is stopped and started again
+Then  those two steps are still ticked and no command has been run by the system
+```
+
+**Scenario:** track selection keeps progress
+
+```text
+Given the player completed three lessons on the discovery track
+When  the player switches to the contributor track
+Then  the three lessons remain marked completed wherever they appear
+```
+
 **Scenario:** reset requires confirmation
 
 ```text
@@ -94,7 +122,9 @@ And   declining the confirmation changes nothing
 
 ## Out of scope
 
-- Accounts, multi-user leaderboards, and any remote or hosted deployment.
+- Accounts, named player profiles, multi-user leaderboards, and any remote or hosted deployment. One player per machine.
+- Deferred-correction quiz mode: every quiz reveals the correct answer after each question.
+- Executing any command from the interface.
 - Languages other than French.
 - Authoring quiz content from the interface; content is edited as files in the repository.
 - Publishing the game through the documentation site.
