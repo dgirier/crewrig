@@ -5,6 +5,7 @@
   "questions": [
     {
       "id": "memoire-01",
+      "level": "discovery",
       "text": "Quels sont les trois paliers de la mémoire de CrewRig ?",
       "choices": [
         "Cache, disque et réseau",
@@ -18,6 +19,7 @@
     },
     {
       "id": "memoire-02",
+      "level": "team",
       "text": "Quelle est la portée de la mémoire de travail Sequential Thinking ?",
       "choices": [
         "Toutes les sessions et tous les outils",
@@ -31,6 +33,7 @@
     },
     {
       "id": "memoire-03",
+      "level": "discovery",
       "text": "Quel palier rend la mémoire partagée entre Claude Code, Gemini CLI, Copilot CLI et Antigravity CLI ?",
       "choices": [
         "MemPalace",
@@ -44,6 +47,7 @@
     },
     {
       "id": "memoire-04",
+      "level": "team",
       "text": "Que doit faire l'agent avant d'écrire dans le coffre Obsidian ?",
       "choices": [
         "Rien : l'écriture est libre",
@@ -57,6 +61,7 @@
     },
     {
       "id": "memoire-05",
+      "level": "team",
       "text": "Quel appel MemPalace suit le calcul du nom du projet dans le balayage de début de session ?",
       "choices": [
         "`mempalace_diary_write`, pour consigner la session",
@@ -70,6 +75,7 @@
     },
     {
       "id": "memoire-06",
+      "level": "team",
       "text": "Comment l'agent retrouve-t-il une tâche en cours laissée par une session ou un outil précédent ?",
       "choices": [
         "Il relit tout l'historique de la conversation précédente",
@@ -83,6 +89,7 @@
     },
     {
       "id": "memoire-07",
+      "level": "contributor",
       "text": "Pourquoi les recherches sémantiques excluent-elles l'aile `transcripts` ?",
       "choices": [
         "C'est une archive brute volumineuse dont le bruit noie les vrais résultats",
@@ -96,6 +103,7 @@
     },
     {
       "id": "memoire-08",
+      "level": "team",
       "text": "Comment un agent doit-il invoquer MemPalace depuis son raisonnement ?",
       "choices": [
         "Par la commande shell `mempalace`, plus rapide",
@@ -109,6 +117,7 @@
     },
     {
       "id": "memoire-09",
+      "level": "team",
       "text": "Que faut-il faire avant la fin d'une session si le travail se poursuit ?",
       "choices": [
         "Supprimer le journal de l'agent",
@@ -122,6 +131,7 @@
     },
     {
       "id": "memoire-10",
+      "level": "contributor",
       "text": "Quelle est la première étape de diagnostic face à l'erreur MCP `-32001` (verrou d'écriture refusé) ?",
       "choices": [
         "Supprimer le répertoire du palais",

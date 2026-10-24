@@ -5,6 +5,7 @@
   "questions": [
     {
       "id": "parite-01",
+      "level": "discovery",
       "text": "Que dit la règle critique sur l'asymétrie entre CLI ?",
       "choices": [
         "Une asymétrie est tolérée si elle est temporaire",
@@ -18,6 +19,7 @@
     },
     {
       "id": "parite-02",
+      "level": "contributor",
       "text": "Que faut-il fournir pour accepter un écart de parité sur un CLI ?",
       "choices": [
         "Un accord oral de l'équipe",
@@ -31,6 +33,7 @@
     },
     {
       "id": "parite-03",
+      "level": "team",
       "text": "Quel document recense chaque point d'intégration propre à un CLI ?",
       "choices": [
         "Le fichier `LICENSE`",
@@ -44,6 +47,7 @@
     },
     {
       "id": "parite-04",
+      "level": "contributor",
       "text": "Comment régénère-t-on `docs/cli-matrix.md` ?",
       "choices": [
         "Avec `task cli-matrix:build`, à partir des sources de `docs/cli-matrix/` ; on ne l'édite pas à la main",
@@ -57,6 +61,7 @@
     },
     {
       "id": "parite-05",
+      "level": "discovery",
       "text": "Lequel de ces outils n'est PAS l'un des quatre CLI pris en charge ?",
       "choices": [
         "Gemini CLI",
@@ -70,6 +75,7 @@
     },
     {
       "id": "parite-06",
+      "level": "team",
       "text": "Quel est le fichier d'entrée de Claude Code, qui réexporte `AGENTS.md` ?",
       "choices": [
         ".github/copilot-instructions.md",
@@ -83,6 +89,7 @@
     },
     {
       "id": "parite-07",
+      "level": "team",
       "text": "Quelle racine de configuration de workspace GitHub Copilot CLI utilise-t-il ?",
       "choices": [
         "`.copilot/` uniquement",
@@ -96,6 +103,7 @@
     },
     {
       "id": "parite-08",
+      "level": "contributor",
       "text": "Qu'impose une PR qui touche un point d'intégration propre à un CLI ?",
       "choices": [
         "Mettre à jour la ligne source de la matrice et reconstruire `docs/cli-matrix.md` dans le même diff",
@@ -109,6 +117,7 @@
     },
     {
       "id": "parite-09",
+      "level": "team",
       "text": "Quelle commande déploie le contexte de CrewRig pour Claude Code ?",
       "choices": [
         "`task setup-gemini-interactive`",
@@ -122,6 +131,7 @@
     },
     {
       "id": "parite-10",
+      "level": "team",
       "text": "Quelle racine de configuration Gemini CLI utilise-t-il dans le dépôt ?",
       "choices": [
         ".claude/",

@@ -5,6 +5,7 @@
   "questions": [
     {
       "id": "skills-build-01",
+      "level": "team",
       "text": "Quels sont les trois types de composants du pipeline à source unique ?",
       "choices": [
         "Service, contrôleur et dépôt",
@@ -18,6 +19,7 @@
     },
     {
       "id": "skills-build-02",
+      "level": "team",
       "text": "Quels sont les noms de fichiers source d'une skill et d'un agent ?",
       "choices": [
         "`skill.yml` et `agent.yml`",
@@ -31,6 +33,7 @@
     },
     {
       "id": "skills-build-03",
+      "level": "contributor",
       "text": "Quels champs d'en-tête sont obligatoires pour tout composant ?",
       "choices": [
         "`title`, `author` et `license`",
@@ -44,6 +47,7 @@
     },
     {
       "id": "skills-build-04",
+      "level": "contributor",
       "text": "Quel palier de `artifacts/` est déployé au niveau du répertoire utilisateur, pour toute la machine ?",
       "choices": [
         "`library/`",
@@ -57,6 +61,7 @@
     },
     {
       "id": "skills-build-05",
+      "level": "team",
       "text": "Quelle version minimale de Node.js le build exige-t-il ?",
       "choices": [
         "Node.js 16",
@@ -70,6 +75,7 @@
     },
     {
       "id": "skills-build-06",
+      "level": "team",
       "text": "Où le build place-t-il les skills compilées pour Claude Code ?",
       "choices": [
         "Dans `~/.claude/rules/`",
@@ -83,6 +89,7 @@
     },
     {
       "id": "skills-build-07",
+      "level": "contributor",
       "text": "Peut-on corriger directement un fichier de `.claude/skills/` généré par le build ?",
       "choices": [
         "Oui, c'est le moyen normal de corriger une skill",
@@ -96,6 +103,7 @@
     },
     {
       "id": "skills-build-08",
+      "level": "contributor",
       "text": "Que doit contenir un diff qui modifie une skill déjà présente sur `main` ?",
       "choices": [
         "Une incrémentation de `metadata.provenance.version`",
@@ -109,6 +117,7 @@
     },
     {
       "id": "skills-build-09",
+      "level": "contributor",
       "text": "Quelle version porte un composant tout juste créé sur une branche de fonctionnalité ?",
       "choices": [
         "`0.0.1`, puis `0.1.0` à la fusion",
@@ -122,6 +131,7 @@
     },
     {
       "id": "skills-build-10",
+      "level": "contributor",
       "text": "Comment une source d'agent exprime-t-elle le modèle dont son travail a besoin ?",
       "choices": [
         "Par le nom exact du modèle du fournisseur",

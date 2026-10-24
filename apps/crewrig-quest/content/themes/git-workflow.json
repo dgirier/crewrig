@@ -5,6 +5,7 @@
   "questions": [
     {
       "id": "git-workflow-01",
+      "level": "discovery",
       "text": "Que dit la règle sur la branche `main` ?",
       "choices": [
         "On y pousse directement les petits correctifs",
@@ -18,6 +19,7 @@
     },
     {
       "id": "git-workflow-02",
+      "level": "team",
       "text": "Quel est le format de nom d'une branche d'implémentation ?",
       "choices": [
         "`<préfixe>/<NNNN>-<slug>`, par exemple `feat/0278-crewrig-serious-game`",
@@ -31,6 +33,7 @@
     },
     {
       "id": "git-workflow-03",
+      "level": "discovery",
       "text": "Quand l'agent peut-il fusionner une Pull Request ?",
       "choices": [
         "Dès que la CI est verte",
@@ -44,6 +47,7 @@
     },
     {
       "id": "git-workflow-04",
+      "level": "team",
       "text": "Quelle convention de nommage s'applique aux commits, titres d'issue et titres de PR ?",
       "choices": [
         "Conventional Commits : `feat: ...`, `fix: ...`",
@@ -57,6 +61,7 @@
     },
     {
       "id": "git-workflow-05",
+      "level": "team",
       "text": "Dans quel ordre fusionne-t-on la PR de spécification et la branche d'implémentation ?",
       "choices": [
         "L'implémentation d'abord, la spécification ensuite",
@@ -70,6 +75,7 @@
     },
     {
       "id": "git-workflow-06",
+      "level": "team",
       "text": "Que dit la règle A des journaux de bord ?",
       "choices": [
         "Une issue de fonctionnalité EST son propre journal de bord : on commente directement dessus",
@@ -83,6 +89,7 @@
     },
     {
       "id": "git-workflow-07",
+      "level": "team",
       "text": "Que dit la règle B des journaux de bord ?",
       "choices": [
         "Un seul commentaire récapitulatif à la fusion",
@@ -96,6 +103,7 @@
     },
     {
       "id": "git-workflow-08",
+      "level": "team",
       "text": "Que dit la règle C des journaux de bord ?",
       "choices": [
         "La laisser ouverte pour consulter l'historique",
@@ -109,6 +117,7 @@
     },
     {
       "id": "git-workflow-09",
+      "level": "contributor",
       "text": "Quelles trois conditions la garde pré-édition exige-t-elle avant de modifier un fichier ?",
       "choices": [
         "Un ticket Jira, un fork et une approbation écrite",
@@ -122,6 +131,7 @@
     },
     {
       "id": "git-workflow-10",
+      "level": "contributor",
       "text": "Quelles sections le corps d'une Pull Request doit-il comporter ?",
       "choices": [
         "But en deux phrases, « How to read this PR? », « How to test this PR? » et description détaillée pour les agents",

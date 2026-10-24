@@ -5,6 +5,7 @@
   "questions": [
     {
       "id": "sdd-01",
+      "level": "discovery",
       "text": "Dans quel ordre s'enchaînent les étapes du cycle de vie SDD ?",
       "choices": [
         "SPECS, PLAN, DEV, REVIEW",
@@ -18,6 +19,7 @@
     },
     {
       "id": "sdd-02",
+      "level": "team",
       "text": "Vers quelle étape un constat de classe `tech` renvoie-t-il ?",
       "choices": [
         "PLAN",
@@ -31,6 +33,7 @@
     },
     {
       "id": "sdd-03",
+      "level": "team",
       "text": "Vers quelle étape un constat de classe `arch` renvoie-t-il ?",
       "choices": [
         "DEV",
@@ -44,6 +47,7 @@
     },
     {
       "id": "sdd-04",
+      "level": "team",
       "text": "Que provoque un constat de classe `spec` ?",
       "choices": [
         "Un simple correctif dans la branche courante",
@@ -57,6 +61,7 @@
     },
     {
       "id": "sdd-05",
+      "level": "team",
       "text": "À quelles conditions le cycle de vie se termine-t-il (fusion) ?",
       "choices": [
         "Verdict APPROVE, zéro constat de toute classe et CI verte sur le dernier commit relu",
@@ -70,6 +75,7 @@
     },
     {
       "id": "sdd-06",
+      "level": "contributor",
       "text": "Après combien d'itérations la boucle de revue s'arrête-t-elle sans terminaison ?",
       "choices": [
         "Deux",
@@ -83,6 +89,7 @@
     },
     {
       "id": "sdd-07",
+      "level": "contributor",
       "text": "En cas d'hésitation entre deux classes de constat, que prescrit la règle de désambiguïsation ?",
       "choices": [
         "Choisir la classe la plus proche du code (`tech`)",
@@ -96,6 +103,7 @@
     },
     {
       "id": "sdd-08",
+      "level": "team",
       "text": "Quelle équipe réalise le DEV d'un ticket de palier `small` ?",
       "choices": [
         "L'orchestrateur seul, en ligne",
@@ -109,6 +117,7 @@
     },
     {
       "id": "sdd-09",
+      "level": "team",
       "text": "Quel est le mode d'interaction par défaut du cycle de vie ?",
       "choices": [
         "INTERMEDIATE",
@@ -122,6 +131,7 @@
     },
     {
       "id": "sdd-10",
+      "level": "contributor",
       "text": "Quel est le plafond de révisions du PLAN pour un ticket de palier `standard` ?",
       "choices": [
         "Une",

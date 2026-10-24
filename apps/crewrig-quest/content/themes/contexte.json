@@ -5,6 +5,7 @@
   "questions": [
     {
       "id": "contexte-01",
+      "level": "discovery",
       "text": "Quel fichier source porte la priorité 00 et définit l'identité et les valeurs de l'agent ?",
       "choices": [
         "`config/ORGANIZATION.md`",
@@ -18,6 +19,7 @@
     },
     {
       "id": "contexte-02",
+      "level": "discovery",
       "text": "À quoi sert le fichier de priorité 10, `config/level/<LEVEL>.md` ?",
       "choices": [
         "À adapter les conseils à l'ancienneté de l'utilisateur",
@@ -31,6 +33,7 @@
     },
     {
       "id": "contexte-03",
+      "level": "discovery",
       "text": "Quel fichier de contexte décrit les pratiques et normes d'une équipe ?",
       "choices": [
         "`config/PROFILE.md` (priorité 30)",
@@ -44,6 +47,7 @@
     },
     {
       "id": "contexte-04",
+      "level": "team",
       "text": "Que contient `artifacts/core/rules/60-tools.md`, déployé à la priorité 60 ?",
       "choices": [
         "Les informations personnelles de l'utilisateur",
@@ -57,6 +61,7 @@
     },
     {
       "id": "contexte-05",
+      "level": "team",
       "text": "Quel fichier de priorité 65 porte les consignes d'outils propres à l'organisation ?",
       "choices": [
         "`config/ORGANIZATION.md`",
@@ -70,6 +75,7 @@
     },
     {
       "id": "contexte-06",
+      "level": "team",
       "text": "Dans quel répertoire Claude Code lit-il les fichiers de contexte déployés ?",
       "choices": [
         "`~/.claude/rules/`",
@@ -83,6 +89,7 @@
     },
     {
       "id": "contexte-07",
+      "level": "team",
       "text": "Comment Gemini CLI reçoit-il ses fichiers de contexte ?",
       "choices": [
         "Dans `~/.claude/rules/`",
@@ -96,6 +103,7 @@
     },
     {
       "id": "contexte-08",
+      "level": "team",
       "text": "Sous quelle forme GitHub Copilot CLI applique-t-il les fichiers de contexte ?",
       "choices": [
         "Un seul fichier `AGENTS.md` fusionné",
@@ -109,6 +117,7 @@
     },
     {
       "id": "contexte-09",
+      "level": "team",
       "text": "Quel est le mode de déploiement par défaut des fichiers de contexte, et pourquoi ?",
       "choices": [
         "Le lien symbolique, pour refléter les modifications en direct",
@@ -122,6 +131,7 @@
     },
     {
       "id": "contexte-10",
+      "level": "contributor",
       "text": "Qui est propriétaire des chemins de la couche `core` ?",
       "choices": [
         "Le projet CrewRig amont : les organisations adoptantes ne les modifient pas",

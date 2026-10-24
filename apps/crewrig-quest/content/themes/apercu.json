@@ -5,6 +5,7 @@
   "questions": [
     {
       "id": "apercu-01",
+      "level": "discovery",
       "text": "Qu'est-ce que CrewRig ?",
       "choices": [
         "Un cadre de configuration centralisé pour Gemini CLI, Claude Code, GitHub Copilot CLI et Antigravity CLI",
@@ -18,6 +19,7 @@
     },
     {
       "id": "apercu-02",
+      "level": "discovery",
       "text": "Combien de piliers soutiennent CrewRig ?",
       "choices": [
         "Trois",
@@ -31,6 +33,7 @@
     },
     {
       "id": "apercu-03",
+      "level": "discovery",
       "text": "Laquelle de ces propositions n'est PAS l'un des cinq piliers de CrewRig ?",
       "choices": [
         "Le système de contexte en couches",
@@ -44,6 +47,7 @@
     },
     {
       "id": "apercu-04",
+      "level": "team",
       "text": "Où les skills, agents et commandes sont-ils rédigés ?",
       "choices": [
         "Dans le dossier de configuration de chaque CLI, un par un",
@@ -57,6 +61,7 @@
     },
     {
       "id": "apercu-05",
+      "level": "contributor",
       "text": "Quel script compile les sources de `artifacts/` en sorties pour les quatre CLI ?",
       "choices": [
         "`scripts/build-components.ts`",
@@ -70,6 +75,7 @@
     },
     {
       "id": "apercu-06",
+      "level": "team",
       "text": "Quels agents composent l'équipe interne qui développe CrewRig avec ses propres mécanismes ?",
       "choices": [
         "planner, coder, deployer et monitor",
@@ -83,6 +89,7 @@
     },
     {
       "id": "apercu-07",
+      "level": "discovery",
       "text": "Quelle suite d'étapes résume le cycle de vie du travail non trivial dans CrewRig ?",
       "choices": [
         "BUILD, TEST, DEPLOY, MONITOR",
@@ -96,6 +103,7 @@
     },
     {
       "id": "apercu-08",
+      "level": "team",
       "text": "Que fait la boucle de harness engineering ?",
       "choices": [
         "Elle chiffre le coût en jetons de chaque session",
@@ -109,6 +117,7 @@
     },
     {
       "id": "apercu-09",
+      "level": "discovery",
       "text": "Où CrewRig se place-t-il dans le flux de travail de l'utilisateur ?",
       "choices": [
         "Entre l'utilisateur et les assistants IA : on édite les sources une fois, des scripts les déploient",
@@ -122,6 +131,7 @@
     },
     {
       "id": "apercu-10",
+      "level": "team",
       "text": "Quel document faut-il suivre pas à pas pour adopter CrewRig dans son organisation ?",
       "choices": [
         "Le fichier `LICENSE`",
