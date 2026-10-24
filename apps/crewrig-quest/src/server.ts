@@ -8,7 +8,13 @@ import type { LoadedContent } from "./validate-content.ts";
 import { SECURITY_HEADERS, serveStatic } from "./static.ts";
 import { computeStars } from "./stars.ts";
 import type { QuestStore } from "./store.ts";
-import type { AttemptAnswer, AttemptResult, ProgressResponse, ThemesResponse } from "./types.ts";
+import type {
+  AttemptAnswer,
+  AttemptResult,
+  CheckRecord,
+  ProgressResponse,
+  ThemesResponse,
+} from "./types.ts";
 
 export interface QuestServerOptions {
   content: LoadedContent;
@@ -79,10 +85,16 @@ function parseAnswers(body: unknown): AttemptAnswer[] {
 
 function progress(opts: QuestServerOptions): ProgressResponse {
   const known = new Set(opts.content.lessons.map((l) => l.id));
+  const checked: Record<string, CheckRecord> = {};
+  for (const [id, rec] of opts.store.checks()) if (known.has(id)) checked[id] = rec;
+  const ticks: Record<string, string[]> = {};
+  for (const [id, steps] of opts.store.ticks()) if (known.has(id)) ticks[id] = steps;
   return {
     persisted: opts.store.persisted,
     completed: opts.store.completedLessons().filter((id) => known.has(id)),
     total: opts.content.lessons.length,
+    checked,
+    ticks,
   };
 }
 
@@ -171,7 +183,55 @@ async function handleApi(
       if (!content.lessons.some((l) => l.id === body.lessonId)) {
         throw new HttpError(404, "unknown lesson");
       }
+      // R17: the lesson is completable only once its check has been answered.
+      // A lesson already completed by an earlier version of the game stays completed.
+      const already = store.completedLessons().includes(body.lessonId);
+      if (!already && !store.hasCheck(body.lessonId)) {
+        throw new HttpError(409, "lesson check not answered");
+      }
       const wrote = store.completeLesson(body.lessonId);
+      sendJson(res, 200, { ...progress(opts), persisted: wrote && store.persisted });
+      return;
+    }
+    throw new HttpError(405, "method not allowed");
+  }
+  const lessonMatch = /^\/api\/lessons\/([a-z0-9-]+)\/(check|checklist\/([a-z0-9-]+))$/.exec(
+    pathname,
+  );
+  if (lessonMatch !== null) {
+    const lesson = content.lessons.find((l) => l.id === lessonMatch[1]);
+    if (lesson === undefined) throw new HttpError(404, "unknown lesson");
+    if (lessonMatch[3] === undefined && method === "POST") {
+      // Every check question must be answered exactly once; wrong answers are recorded, never refused.
+      const answers = parseAnswers(await readJsonBody(req));
+      const byId = new Map(lesson.check.map((q) => [q.id, q]));
+      const seen = new Set<string>();
+      let correct = 0;
+      for (const a of answers) {
+        const q = byId.get(a.questionId);
+        if (q === undefined) throw new HttpError(400, `unknown question ${a.questionId}`);
+        if (seen.has(a.questionId)) throw new HttpError(400, `duplicate answer ${a.questionId}`);
+        seen.add(a.questionId);
+        if (a.choice === q.answer) correct += 1;
+      }
+      if (seen.size !== byId.size)
+        throw new HttpError(400, "every check question must be answered");
+      const wrote = store.recordCheck(lesson.id, correct, byId.size);
+      sendJson(res, 200, {
+        ...progress(opts),
+        result: { correct, total: byId.size },
+        persisted: wrote && store.persisted,
+      });
+      return;
+    }
+    if (lessonMatch[3] !== undefined && method === "PUT") {
+      const step = lesson.checklist?.find((s) => s.id === lessonMatch[3]);
+      if (step === undefined) throw new HttpError(404, "unknown checklist step");
+      const body = await readJsonBody(req);
+      if (!isRecord(body) || typeof body.ticked !== "boolean") {
+        throw new HttpError(400, "body must be { ticked: boolean }");
+      }
+      const wrote = store.setTick(lesson.id, step.id, body.ticked);
       sendJson(res, 200, { ...progress(opts), persisted: wrote && store.persisted });
       return;
     }

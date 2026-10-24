@@ -5,6 +5,7 @@
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import type { CheckRecord } from "./types.ts";
 
 interface MemoryAttempt {
   themeId: string;
@@ -25,12 +26,28 @@ const SCHEMA = `
     lesson_id    TEXT PRIMARY KEY,
     completed_at TEXT NOT NULL
   );
+  -- Added after the first release (additive only: older files stay valid).
+  CREATE TABLE IF NOT EXISTS lesson_checks (
+    lesson_id   TEXT PRIMARY KEY,
+    correct     INTEGER NOT NULL,
+    total       INTEGER NOT NULL,
+    answered_at TEXT    NOT NULL
+  );
+  CREATE TABLE IF NOT EXISTS checklist_ticks (
+    lesson_id TEXT NOT NULL,
+    step_id   TEXT NOT NULL,
+    ticked_at TEXT NOT NULL,
+    PRIMARY KEY (lesson_id, step_id)
+  );
 `;
 
 export class QuestStore {
   #db: DatabaseSync | null;
   readonly #memoryAttempts: MemoryAttempt[] = [];
   readonly #memoryLessons = new Set<string>();
+  readonly #memoryChecks = new Map<string, CheckRecord>();
+  /** Ticked steps as `lessonId\u0000stepId`. */
+  readonly #memoryTicks = new Set<string>();
   /** Why the database is unavailable, or null when it is open. */
   readonly openError: string | null;
 
@@ -138,14 +155,109 @@ export class QuestStore {
     return false;
   }
 
-  /** Erase every attempt and every lesson mark. */
-  reset(): boolean {
-    this.#memoryAttempts.length = 0;
-    this.#memoryLessons.clear();
+  /** Record (or replace, on a retry) the result of a lesson check. */
+  recordCheck(lessonId: string, correct: number, total: number): boolean {
     const db = this.#db;
     if (db !== null) {
       try {
-        db.exec("DELETE FROM attempts; DELETE FROM lesson_progress;");
+        db.prepare(
+          "INSERT OR REPLACE INTO lesson_checks (lesson_id, correct, total, answered_at) VALUES (?, ?, ?, ?)",
+        ).run(lessonId, correct, total, new Date().toISOString());
+        return true;
+      } catch {
+        this.#degrade();
+      }
+    }
+    this.#memoryChecks.set(lessonId, { correct, total });
+    return false;
+  }
+
+  /** Last check result per lesson id. */
+  checks(): Map<string, CheckRecord> {
+    const db = this.#db;
+    if (db !== null) {
+      try {
+        const rows = db.prepare("SELECT lesson_id, correct, total FROM lesson_checks").all();
+        return new Map(
+          rows.map((r) => [
+            String(r.lesson_id),
+            { correct: Number(r.correct), total: Number(r.total) },
+          ]),
+        );
+      } catch {
+        this.#degrade();
+      }
+    }
+    return new Map(this.#memoryChecks);
+  }
+
+  hasCheck(lessonId: string): boolean {
+    return this.checks().has(lessonId);
+  }
+
+  /** Tick or untick one checklist step. The game only remembers it; nothing is executed. */
+  setTick(lessonId: string, stepId: string, ticked: boolean): boolean {
+    const db = this.#db;
+    if (db !== null) {
+      try {
+        if (ticked) {
+          db.prepare(
+            "INSERT OR IGNORE INTO checklist_ticks (lesson_id, step_id, ticked_at) VALUES (?, ?, ?)",
+          ).run(lessonId, stepId, new Date().toISOString());
+        } else {
+          db.prepare("DELETE FROM checklist_ticks WHERE lesson_id = ? AND step_id = ?").run(
+            lessonId,
+            stepId,
+          );
+        }
+        return true;
+      } catch {
+        this.#degrade();
+      }
+    }
+    const key = `${lessonId}\u0000${stepId}`;
+    if (ticked) this.#memoryTicks.add(key);
+    else this.#memoryTicks.delete(key);
+    return false;
+  }
+
+  /** Ticked step ids per lesson id. */
+  ticks(): Map<string, string[]> {
+    const out = new Map<string, string[]>();
+    const add = (lesson: string, step: string): void => {
+      out.set(lesson, [...(out.get(lesson) ?? []), step]);
+    };
+    const db = this.#db;
+    if (db !== null) {
+      try {
+        const rows = db
+          .prepare("SELECT lesson_id, step_id FROM checklist_ticks ORDER BY ticked_at, step_id")
+          .all();
+        for (const r of rows) add(String(r.lesson_id), String(r.step_id));
+        return out;
+      } catch {
+        this.#degrade();
+      }
+    }
+    for (const key of this.#memoryTicks) {
+      const [lesson = "", step = ""] = key.split("\u0000");
+      add(lesson, step);
+    }
+    return out;
+  }
+
+  /** Erase every attempt, lesson mark, check record and checklist tick. */
+  reset(): boolean {
+    this.#memoryAttempts.length = 0;
+    this.#memoryLessons.clear();
+    this.#memoryChecks.clear();
+    this.#memoryTicks.clear();
+    const db = this.#db;
+    if (db !== null) {
+      try {
+        db.exec(
+          "DELETE FROM attempts; DELETE FROM lesson_progress; DELETE FROM lesson_checks; DELETE FROM checklist_ticks;",
+        );
         return true;
       } catch {
         this.#degrade();
