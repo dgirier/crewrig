@@ -1,7 +1,7 @@
 ---
 id: "0278"
 slug: crewrig-serious-game
-status: draft
+status: approved
 complexity: standard
 interaction-mode: INTERMEDIATE
 related-issue: 1
