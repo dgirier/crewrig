@@ -95,7 +95,8 @@ export function renderCheck(
           .catch(() => {
             go.disabled = false;
             error.hidden = false;
-            error.textContent = "Impossible d'enregistrer le test : le serveur local ne répond pas.";
+            error.textContent =
+              "Impossible d'enregistrer le test : le serveur local ne répond pas.";
           });
       });
       validate.replaceWith(go);
