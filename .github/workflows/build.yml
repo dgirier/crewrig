@@ -16,6 +16,9 @@ concurrency:
 permissions:
   contents: read
   actions: write
+  # dorny/paths-filter lists the changed files of a pull request through the
+  # API; on a private repository that needs this read scope.
+  pull-requests: read
 
 jobs:
   build:
