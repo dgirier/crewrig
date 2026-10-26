@@ -102,6 +102,12 @@ contract — never flowing back upstream.
 | `config/.env.example` | Environment variable reference (gitignored `.env` is never committed). |
 | `config/release-monorepo.json` | Monorepo release tooling configuration. |
 
+### Applications (spec 0278)
+
+| Path | Description |
+|---|---|
+| `apps/` | Standalone applications shipped with the framework, each self-contained and dependency-free. Core/`strict`. Today it holds `apps/crewrig-quest/`, the local French-language serious game that teaches CrewRig: a Node.js 24 server (`node:http`, `node:sqlite`), TypeScript browser code served with its types stripped, quiz and lesson content as JSON under `content/`, and the test suites run by the `crewrig-quest` capability of `ci/ci-capabilities.yml`. Its local results database lives under `apps/crewrig-quest/data/` and is gitignored. Not deployed to any CLI. |
+
 ### Artifact zones — core and library
 
 `artifacts/FORMAT.md` is the normative format contract for all artifact

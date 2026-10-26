@@ -1,0 +1,147 @@
+{
+  "id": "git-workflow",
+  "title": "Branches, PR et journaux de bord",
+  "description": "Branche principale protégée, nommage, PR de spécification, gitmoji et règles A/B/C des journaux de bord.",
+  "questions": [
+    {
+      "id": "git-workflow-01",
+      "level": "discovery",
+      "text": "Que dit la règle sur la branche `main` ?",
+      "choices": [
+        "On y pousse directement les petits correctifs",
+        "Elle est protégée : aucun push direct, tout passe par une branche et une Pull Request",
+        "Seul l'orchestrateur peut y pousser",
+        "Elle est protégée uniquement pendant les releases"
+      ],
+      "answer": 1,
+      "explanation": "Chaque changement passe par une branche de fonctionnalité fusionnée dans `main` via une Pull Request.",
+      "source": "AGENTS.md"
+    },
+    {
+      "id": "git-workflow-02",
+      "level": "team",
+      "text": "Quel est le format de nom d'une branche d'implémentation ?",
+      "choices": [
+        "`<préfixe>/<NNNN>-<slug>`, par exemple `feat/0278-crewrig-serious-game`",
+        "`<NNNN>/<préfixe>-<slug>`",
+        "`dev-<prénom>-<date>`",
+        "`feature_<slug>`"
+      ],
+      "answer": 0,
+      "explanation": "Les préfixes valides sont `feat/`, `fix/`, `docs/` et `refactor/`, suivis de l'identifiant de spec et d'un slug : le nom de branche renvoie à la spec.",
+      "source": "docs/spec-pr-workflow.md"
+    },
+    {
+      "id": "git-workflow-03",
+      "level": "discovery",
+      "text": "Quand l'agent peut-il fusionner une Pull Request ?",
+      "choices": [
+        "Dès que la CI est verte",
+        "Dès que le relecteur a approuvé",
+        "Quand l'auteur de la PR est aussi l'agent",
+        "Seulement après avoir demandé l'autorisation formelle de l'utilisateur, juste avant la fusion"
+      ],
+      "answer": 3,
+      "explanation": "Ne jamais fusionner sans la permission formelle de l'utilisateur, demandée juste avant l'exécution de la fusion.",
+      "source": "AGENTS.md"
+    },
+    {
+      "id": "git-workflow-04",
+      "level": "team",
+      "text": "Quelle convention de nommage s'applique aux commits, titres d'issue et titres de PR ?",
+      "choices": [
+        "Conventional Commits : `feat: ...`, `fix: ...`",
+        "`[TICKET-123] description`",
+        "Gitmoji : `<emoji> <description courte>`",
+        "Aucune convention imposée"
+      ],
+      "answer": 2,
+      "explanation": "Gitmoji est la seule convention : les préfixes de type conventional-commit (`feat:`, `fix:`, `chore:`) sont proscrits.",
+      "source": "AGENTS.md"
+    },
+    {
+      "id": "git-workflow-05",
+      "level": "team",
+      "text": "Dans quel ordre fusionne-t-on la PR de spécification et la branche d'implémentation ?",
+      "choices": [
+        "L'implémentation d'abord, la spécification ensuite",
+        "La PR de spécification est fusionnée dans `main` avant que la branche d'implémentation soit créée",
+        "Les deux dans la même PR",
+        "L'ordre n'a pas d'importance"
+      ],
+      "answer": 1,
+      "explanation": "Couper une branche d'implémentation alors que la PR de spécification est ouverte est une violation de processus.",
+      "source": "docs/spec-pr-workflow.md"
+    },
+    {
+      "id": "git-workflow-06",
+      "level": "team",
+      "text": "Que dit la règle A des journaux de bord ?",
+      "choices": [
+        "Une issue de fonctionnalité EST son propre journal de bord : on commente directement dessus",
+        "Chaque PR ouvre une issue de journal distincte",
+        "Le journal de bord est un fichier Markdown dans le dépôt",
+        "Le journal est rédigé uniquement à la fin du travail"
+      ],
+      "answer": 0,
+      "explanation": "On ne crée une issue dédiée (label `logbook`) que s'il n'existe aucune issue préexistante à laquelle rattacher le travail.",
+      "source": "docs/logbook-issues.md"
+    },
+    {
+      "id": "git-workflow-07",
+      "level": "team",
+      "text": "Que dit la règle B des journaux de bord ?",
+      "choices": [
+        "Un seul commentaire récapitulatif à la fusion",
+        "Un commentaire par commit",
+        "Un commentaire par jour de travail",
+        "Un commentaire par transition d'étape, jamais regroupé à la fin"
+      ],
+      "answer": 3,
+      "explanation": "Chaque transition (SPECS→PLAN, PLAN→DEV, DEV→REVIEW, REVIEW→fusion) reçoit son commentaire, avec une puce par obstacle, décision ou rebase.",
+      "source": "docs/logbook-issues.md"
+    },
+    {
+      "id": "git-workflow-08",
+      "level": "team",
+      "text": "Que dit la règle C des journaux de bord ?",
+      "choices": [
+        "La laisser ouverte pour consulter l'historique",
+        "La fermer avant la fusion",
+        "Fermer l'issue immédiatement après la fusion",
+        "La supprimer après une semaine"
+      ],
+      "answer": 2,
+      "explanation": "Une issue ouverte après la fusion de sa PR passe pour du travail inachevé et érode la confiance dans le suivi.",
+      "source": "docs/logbook-issues.md"
+    },
+    {
+      "id": "git-workflow-09",
+      "level": "contributor",
+      "text": "Quelles trois conditions la garde pré-édition exige-t-elle avant de modifier un fichier ?",
+      "choices": [
+        "Un ticket Jira, un fork et une approbation écrite",
+        "Une issue existante, une branche de fonctionnalité active et un worktree dédié",
+        "Une issue, une PR ouverte et un tag de version",
+        "Un test rouge, une branche et un reviewer"
+      ],
+      "answer": 1,
+      "explanation": "Le worktree est `.worktrees/<ticket-id>/`, pas la racine du dépôt. Éditer sans satisfaire les trois conditions est une violation de processus.",
+      "source": "AGENTS.md"
+    },
+    {
+      "id": "git-workflow-10",
+      "level": "contributor",
+      "text": "Quelles sections le corps d'une Pull Request doit-il comporter ?",
+      "choices": [
+        "But en deux phrases, « How to read this PR? », « How to test this PR? » et description détaillée pour les agents",
+        "Uniquement une liste de fichiers modifiés",
+        "Un changelog et un numéro de version",
+        "Le diff complet collé en commentaire"
+      ],
+      "answer": 0,
+      "explanation": "Le gabarit de PR guide aussi bien le relecteur humain que les agents qui analyseront la PR.",
+      "source": "docs/pr-format.md"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>CrewRig Quest</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/app.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <header class="site-header">
+      <div class="wrap header-row">
+        <a class="brand" href="#/">CrewRig Quest</a>
+        <nav aria-label="Navigation principale">
+          <ul class="nav-list">
+            <li><a href="#/" data-nav="home">Quiz</a></li>
+            <li><a href="#/apprendre" data-nav="learn">Parcours d'apprentissage</a></li>
+            <li><a href="#/sdd" data-nav="sdd">Cycle de vie SDD</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class="wrap">
+      <div id="notice" class="notice" role="status" hidden></div>
+    </div>
+    <main id="main" class="wrap" tabindex="-1">
+      <noscript>
+        <p>CrewRig Quest nécessite JavaScript pour fonctionner dans le navigateur.</p>
+      </noscript>
+    </main>
+    <footer class="site-footer">
+      <div class="wrap footer-row">
+        <p>Jeu local : vos résultats restent sur cette machine.</p>
+        <button type="button" id="reset-button" class="btn btn-quiet">Effacer mes résultats</button>
+      </div>
+    </footer>
+    <dialog id="confirm-dialog" aria-labelledby="confirm-title">
+      <form method="dialog">
+        <h2 id="confirm-title">Effacer mes résultats ?</h2>
+        <p>Toutes vos étoiles et toute votre progression dans le parcours seront remises à zéro. Cette action est définitive.</p>
+        <div class="dialog-actions">
+          <button type="submit" value="cancel" class="btn" autofocus>Annuler</button>
+          <button type="submit" value="confirm" class="btn btn-danger">Oui, tout effacer</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+{
+  "id": "harness",
+  "title": "Boucle de feedback du harness",
+  "description": "Étiqueter les frictions, les regrouper et les transformer en améliorations livrées.",
+  "questions": [
+    {
+      "id": "harness-01",
+      "level": "discovery",
+      "text": "Quelles sont les quatre étapes de la boucle du harness ?",
+      "choices": [
+        "Planifier, coder, tester, déployer",
+        "Détecter, alerter, escalader, clore",
+        "Étiqueter, regrouper, corriger, réinstaller",
+        "Collecter, anonymiser, publier, archiver"
+      ],
+      "answer": 2,
+      "explanation": "Tag, Cluster, Fix, Re-install : des frictions réelles deviennent des améliorations livrées.",
+      "source": "docs/harness-engineering.md"
+    },
+    {
+      "id": "harness-02",
+      "level": "team",
+      "text": "Quelle skill un agent invoque-t-il pour étiqueter une friction ?",
+      "choices": [
+        "`harness-curator`",
+        "`harness-report`",
+        "`pr-reviewer`",
+        "`spec-author`"
+      ],
+      "answer": 1,
+      "explanation": "`harness-report` est l'unique implémentation du protocole d'étiquetage ; `harness-curator` lit ensuite les étiquettes.",
+      "source": "docs/harness-engineering.md"
+    },
+    {
+      "id": "harness-03",
+      "level": "team",
+      "text": "Quel est le rôle de la skill `harness-curator` ?",
+      "choices": [
+        "Regrouper les frictions étiquetées et ouvrir une issue descriptive par groupe",
+        "Corriger automatiquement les skills défaillantes",
+        "Étiqueter les frictions à la place des agents",
+        "Relire les PR des utilisateurs"
+      ],
+      "answer": 0,
+      "explanation": "Le curateur lit l'aile `harness-friction`, regroupe par sous-catégorie et ouvre une issue par groupe sur le dépôt déclaré dans le bloc de provenance.",
+      "source": "docs/harness-engineering.md"
+    },
+    {
+      "id": "harness-04",
+      "level": "team",
+      "text": "Que signifie que l'étiquetage est « fire-and-forget » ?",
+      "choices": [
+        "L'étiquette s'efface automatiquement après lecture",
+        "L'étiquette n'est jamais lue par personne",
+        "L'agent attend la validation de l'utilisateur",
+        "L'agent étiquette et reprend sa tâche, sans attendre d'accusé de réception"
+      ],
+      "answer": 3,
+      "explanation": "Lire l'aile des frictions est le travail du curateur, pas de l'agent en cours de tâche, qui ne doit pas être bloqué.",
+      "source": "docs/harness-engineering.md"
+    },
+    {
+      "id": "harness-05",
+      "level": "team",
+      "text": "Laquelle de ces situations est un signal de reconnaissance qui impose d'étiqueter ?",
+      "choices": [
+        "Un test qui échoue une seule fois pour une raison connue",
+        "Une réponse un peu longue de l'agent",
+        "L'utilisateur conteste, corrige ou annule l'action que l'agent vient de faire",
+        "Une demande de précision de l'agent"
+      ],
+      "answer": 2,
+      "explanation": "Les cinq signaux sont : retour négatif de l'utilisateur, contournement d'une autre skill, surprise d'un outil (deuxième fois), lacune de processus et friction de garde-fou.",
+      "source": "docs/harness-engineering.md"
+    },
+    {
+      "id": "harness-06",
+      "level": "contributor",
+      "text": "À partir de quand une surprise d'outil devient-elle un signal à étiqueter ?",
+      "choices": [
+        "Dès la première fois",
+        "La deuxième fois dans la même session",
+        "Après dix occurrences",
+        "Uniquement si l'utilisateur la signale"
+      ],
+      "answer": 1,
+      "explanation": "La première fois relève de la malchance ; la deuxième révèle un schéma.",
+      "source": "docs/harness-engineering.md"
+    },
+    {
+      "id": "harness-07",
+      "level": "contributor",
+      "text": "Laquelle de ces catégories de friction n'existe PAS dans la taxonomie ?",
+      "choices": [
+        "`security`",
+        "`tool`",
+        "`prompt`",
+        "`process`"
+      ],
+      "answer": 0,
+      "explanation": "Les cinq catégories sont `tool`, `prompt`, `format`, `behavior` et `process`.",
+      "source": "docs/harness-engineering.md"
+    },
+    {
+      "id": "harness-08",
+      "level": "contributor",
+      "text": "Où doit-on signaler un bug trouvé dans le code d'un utilisateur pendant une revue ?",
+      "choices": [
+        "Dans l'aile `harness-friction`",
+        "Dans le journal personnel de l'agent uniquement",
+        "Nulle part : ce n'est pas utile",
+        "Dans l'issue de journal de bord du projet, pas dans l'aile des frictions"
+      ],
+      "answer": 3,
+      "explanation": "La boucle concerne les défauts du système d'agents lui-même. Une fonctionnalité manquante relève d'une issue ordinaire.",
+      "source": "docs/harness-engineering.md"
+    },
+    {
+      "id": "harness-09",
+      "level": "contributor",
+      "text": "Dans quelle aile de MemPalace chaque étiquette de friction est-elle enregistrée ?",
+      "choices": [
+        "L'aile `transcripts`",
+        "L'aile du projet courant, salle `task-handoff`",
+        "L'aile globale `harness-friction`",
+        "Le coffre Obsidian"
+      ],
+      "answer": 2,
+      "explanation": "Chaque étiquette est une entrée structurée de l'aile globale `harness-friction`, qui range la friction par catégorie.",
+      "source": "docs/harness-engineering.md"
+    },
+    {
+      "id": "harness-10",
+      "level": "contributor",
+      "text": "Où atterrit l'issue ouverte pour une friction sur un composant `core` ou `library` ?",
+      "choices": [
+        "Sur le dépôt de l'organisation (`feedback_repo`)",
+        "Toujours sur le dépôt amont (`canonical_repo`)",
+        "Sur le dépôt de l'utilisateur qui a signalé la friction",
+        "Elle n'est ouverte que si l'organisation l'approuve"
+      ],
+      "answer": 1,
+      "explanation": "`feedback_repo` ne gouverne que les paliers propres à l'adoptant (`community`, `org`) ; les composants amont renvoient toujours vers `canonical_repo`.",
+      "source": "docs/concepts.md"
+    }
+  ]
+}

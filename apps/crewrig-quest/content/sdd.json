@@ -1,0 +1,89 @@
+{
+  "title": "Le cycle de vie SDD",
+  "intro": "Tout ticket non trivial traverse quatre étapes : SPECS, PLAN, DEV puis REVIEW. La revue renvoie chaque constat vers l'étape qui peut le corriger, et le cycle ne s'achève que lorsqu'une passe complète ne produit plus aucun constat.",
+  "stages": [
+    {
+      "id": "SPECS",
+      "title": "SPECS",
+      "question": "Quoi ?",
+      "description": "Une spécification (le QUOI) rédigée dans un fichier unique sous `specs/`, livrée par sa propre PR de spécification et fusionnée dans `main` avant toute branche d'implémentation."
+    },
+    {
+      "id": "PLAN",
+      "title": "PLAN",
+      "question": "Comment ?",
+      "description": "Un plan (étapes, rayon d'impact, alternatives) publié en commentaire de l'issue de journal de bord, puis approuvé selon le mode d'interaction."
+    },
+    {
+      "id": "DEV",
+      "title": "DEV",
+      "question": "Réaliser",
+      "description": "Le diff d'implémentation sur une branche de fonctionnalité, dans un worktree dédié. L'étape se termine par une PR ouverte avec une CI verte."
+    },
+    {
+      "id": "REVIEW",
+      "title": "REVIEW",
+      "question": "Vérifier",
+      "description": "Un verdict et zéro constat ou plus, publiés en commentaire de PR par un relecteur indépendant. Chaque constat porte exactement une classe."
+    }
+  ],
+  "findingClasses": [
+    {
+      "id": "tech",
+      "target": "DEV",
+      "meaning": "Défaut d'implémentation : l'intention et la conception sont correctes, la réalisation est fautive.",
+      "example": "La spec demande trois tentatives avec attente exponentielle ; le code n'essaie qu'une fois, sans attente."
+    },
+    {
+      "id": "arch",
+      "target": "PLAN",
+      "meaning": "Défaut de conception : la spécification est correcte, mais le design choisi ne peut pas la réaliser proprement.",
+      "example": "La spec exige une livraison exactement une fois malgré les redémarrages ; le plan a retenu une file en mémoire."
+    },
+    {
+      "id": "spec",
+      "target": "SPECS",
+      "meaning": "Lacune de spécification : ni le design ni le code ne sont fautifs, mais la spec ne tranche pas un point devenu important.",
+      "example": "Que doit-il se passer quand l'entrée est vide ? La spec ne le dit pas. Elle est amendée par une PR de delta-spec."
+    }
+  ],
+  "disambiguation": "En cas d'hésitation entre deux classes adjacentes, on retient la plus en amont (tech < arch < spec) : un constat tech mal routé coûte une relance d'équipe, un constat spec mal routé coûte tout le cycle aval.",
+  "termination": [
+    "Une passe de REVIEW s'achève avec le verdict APPROVE.",
+    "La même passe ne produit aucun constat, de quelque classe que ce soit (tech, arch ou spec).",
+    "La CI est verte sur le dernier commit relu."
+  ],
+  "guardrail": "La boucle s'arrête après 5 itérations (réglable dans le frontmatter de la spec) sans terminaison : l'orchestrateur publie un résumé structuré sur le journal de bord et alerte l'utilisateur, même en mode AUTO.",
+  "tiers": [
+    {
+      "id": "trivial",
+      "team": "En ligne (orchestrateur seul)",
+      "planRevisionCap": 1,
+      "note": "Ni équipe, ni worktree, ni journal dédié : réservé aux modifications d'un seul fichier sans surface de test."
+    },
+    {
+      "id": "small",
+      "team": "developer + pr-logbook + pr-reviewer",
+      "planRevisionCap": 1,
+      "note": "Worktree requis ; ni architect ni tester."
+    },
+    {
+      "id": "standard",
+      "team": "Gabarits d'équipe 1, 2 et 3 d'AGENTS.md",
+      "planRevisionCap": 2,
+      "note": "Palier par défaut actuel."
+    },
+    {
+      "id": "large",
+      "team": "Décomposition en sous-specs dirigée par architect, puis une équipe standard par sous-spec",
+      "planRevisionCap": 5,
+      "note": "Chaque sous-spec a sa propre PR de spécification."
+    }
+  ],
+  "sources": [
+    "docs/adr/0010-spec-plan-review-lifecycle.md",
+    "docs/retroactive-loop.md",
+    "docs/lifecycle-diagram.md",
+    "docs/interaction-modes.md"
+  ]
+}

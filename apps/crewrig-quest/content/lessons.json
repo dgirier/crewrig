@@ -1,0 +1,963 @@
+[
+  {
+    "id": "quest-ce-que-crewrig",
+    "level": "discovery",
+    "title": "Qu'est-ce que CrewRig ?",
+    "summary": "Un cadre de configuration centralisé pour quatre assistants de codage en ligne de commande.",
+    "diagram": "architecture",
+    "body": [
+      {
+        "type": "p",
+        "text": "CrewRig est un cadre de configuration centralisé pour Gemini CLI, Claude Code, GitHub Copilot CLI et Antigravity CLI. Au lieu de configurer chaque outil à la main, pour chaque coéquipier et chaque projet, on tient une source de vérité unique que CrewRig compile dans la disposition attendue par chaque outil."
+      },
+      {
+        "type": "p",
+        "text": "CrewRig se place entre vous et les assistants IA. Trois préoccupations partagent le même pipeline :"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Qui est l'assistant pour vous : une pile de fichiers de contexte qui encodent votre identité, votre ancienneté, votre équipe et votre rôle.",
+          "Ce dont il est capable : des skills, agents et commandes rédigés une fois et compilés pour chaque outil.",
+          "Comment le framework s'améliore : une boucle de feedback où les agents signalent les frictions rencontrées, qui deviennent du travail suivi."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Le schéma ci-dessous résume l'architecture du projet : les sources de `artifacts/` sont compilées par `scripts/build-components.ts` vers les quatre CLI, les fichiers de `config/` sont déployés dans les répertoires de règles de chaque outil, et MemPalace sert de mémoire partagée."
+      },
+      {
+        "type": "note",
+        "text": "CrewRig se développe avec ses propres mécanismes : l'équipe interne (architect, developer, tester, pr-logbook, pr-reviewer) utilise les skills et agents livrés avec le framework."
+      }
+    ],
+    "sources": [
+      "docs/introduction.md",
+      "docs/what-is-crewrig.md",
+      "README.md"
+    ],
+    "check": [
+      {
+        "id": "quest-ce-que-crewrig-check-01",
+        "text": "Que fait CrewRig pour les quatre assistants de codage en ligne de commande ?",
+        "choices": [
+          "Il remplace les assistants par un modèle unique",
+          "Il tient une source de vérité unique, compilée dans la disposition attendue par chaque outil",
+          "Il héberge un service distant qui exécute les assistants",
+          "Il se limite à traduire les messages des assistants"
+        ],
+        "answer": 1,
+        "explanation": "CrewRig remplace la configuration manuelle de chaque outil par une source de vérité unique, compilée pour chacun d'eux.",
+        "source": "docs/what-is-crewrig.md"
+      },
+      {
+        "id": "quest-ce-que-crewrig-check-02",
+        "text": "Quel rôle MemPalace joue-t-il dans l'architecture du projet ?",
+        "choices": [
+          "Il compile les skills",
+          "Il sert de mémoire partagée entre les outils",
+          "Il gère les branches et les PR",
+          "Il exécute la CI"
+        ],
+        "answer": 1,
+        "explanation": "MemPalace conserve la mémoire des agents d'une session à l'autre et d'un CLI à l'autre.",
+        "source": "docs/concepts.md"
+      }
+    ]
+  },
+  {
+    "id": "cinq-piliers",
+    "level": "discovery",
+    "title": "Les cinq piliers",
+    "summary": "Les idées structurantes à connaître avant de lire le reste de la documentation.",
+    "body": [
+      {
+        "type": "p",
+        "text": "Chaque agent et chaque contributeur doit connaître les cinq piliers de CrewRig. Ce sont les idées porteuses ; le reste de la documentation les détaille."
+      },
+      {
+        "type": "ol",
+        "items": [
+          "Système de contexte en couches : des fichiers numérotés de 00 à 60, déployés dans le répertoire utilisateur de chaque CLI, façonnent le comportement de l'assistant selon l'identité, le rôle, l'équipe et l'ancienneté.",
+          "Mémoire partagée entre outils : MemPalace conserve la mémoire des agents d'une session à l'autre et d'un CLI à l'autre.",
+          "Création et partage de skills, agents et commandes : `artifacts/` est la zone à source unique, compilée par `scripts/build-components.ts` pour les quatre CLI.",
+          "Harness engineering : une boucle de feedback où les agents étiquettent les frictions (skill `harness-report`) et où `harness-curator` les regroupe en issues exploitables.",
+          "Parité multi-CLI : les fonctionnalités sont implémentées symétriquement ; l'asymétrie silencieuse est interdite et chaque écart doit être prouvé."
+        ]
+      },
+      {
+        "type": "note",
+        "text": "Ces cinq piliers sont aussi énoncés de façon normative dans `AGENTS.md`, le document de règles que tous les agents chargent."
+      }
+    ],
+    "sources": [
+      "docs/introduction.md",
+      "docs/what-is-crewrig.md",
+      "AGENTS.md"
+    ],
+    "check": [
+      {
+        "id": "cinq-piliers-check-01",
+        "text": "Quel pilier interdit l'asymétrie silencieuse entre les outils ?",
+        "choices": [
+          "La mémoire partagée",
+          "Le harness engineering",
+          "La parité multi-CLI",
+          "Le contexte en couches"
+        ],
+        "answer": 2,
+        "explanation": "La parité multi-CLI impose une implémentation symétrique ; chaque écart doit être prouvé.",
+        "source": "docs/what-is-crewrig.md"
+      },
+      {
+        "id": "cinq-piliers-check-02",
+        "text": "Où se trouve la zone à source unique des skills, agents et commandes ?",
+        "choices": [
+          "`config/`",
+          "`.claude/`",
+          "`artifacts/`",
+          "`docs/`"
+        ],
+        "answer": 2,
+        "explanation": "`artifacts/` est la zone à source unique, compilée par `scripts/build-components.ts` pour les quatre CLI.",
+        "source": "docs/what-is-crewrig.md"
+      },
+      {
+        "id": "cinq-piliers-check-03",
+        "text": "Que fait la boucle de harness engineering ?",
+        "choices": [
+          "Elle déploie automatiquement les correctifs en production",
+          "Elle mesure la vitesse de chaque assistant",
+          "Elle fait remonter les frictions signalées par les agents sous forme d'issues exploitables",
+          "Elle supprime les fichiers de contexte obsolètes"
+        ],
+        "answer": 2,
+        "explanation": "Les agents étiquettent les frictions et `harness-curator` les regroupe en issues exploitables.",
+        "source": "docs/harness-engineering.md"
+      }
+    ]
+  },
+  {
+    "id": "contexte-en-couches",
+    "level": "discovery",
+    "title": "Les fichiers de contexte en couches",
+    "summary": "Huit sources, un ordre de priorité, quatre façons de les charger.",
+    "body": [
+      {
+        "type": "p",
+        "text": "Le comportement d'un assistant est façonné par une pile de fichiers de contexte, chacun traitant une préoccupation et combiné dans un ordre de priorité fixe, matérialisé par un préfixe numérique."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "00 : `config/SOUL.md`, l'identité et les valeurs de l'agent.",
+          "10 : `config/level/<LEVEL>.md`, le guidage adapté à l'ancienneté.",
+          "20 : `config/ORGANIZATION.md`, les politiques de l'entreprise.",
+          "30 : `config/PROFILE.md`, les informations personnelles.",
+          "40 : `config/expertise/<ROLE>.md`, la spécialisation technique.",
+          "50 : `config/teams/<TEAM>.md`, les pratiques et normes d'équipe.",
+          "60 : `artifacts/core/rules/60-tools.md`, l'architecture de mémoire et les règles d'outils du framework.",
+          "65 : `config/TOOLS.md`, les consignes d'outils propres à l'organisation."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Les quatre outils consomment les mêmes sources mais les chargent différemment :"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Gemini CLI : fichiers à préfixe numérique directement dans `~/.gemini/`, avec ordre de priorité imposé.",
+          "Claude Code : combinaison additive des fichiers de `~/.claude/rules/`.",
+          "GitHub Copilot CLI : fichiers `*.instructions.md` dans `~/.copilot/instructions/`.",
+          "Antigravity CLI : les fichiers numérotés sont concaténés dans un unique `AGENTS.md`, sous la racine de configuration d'Antigravity."
+        ]
+      },
+      {
+        "type": "note",
+        "text": "Par défaut, les fichiers sont copiés (et non liés symboliquement) vers le répertoire cible, ce qui évite l'empoisonnement du contexte par une branche malveillante."
+      }
+    ],
+    "sources": [
+      "docs/concepts.md",
+      "docs/adoption-guide.md",
+      "README.md"
+    ],
+    "check": [
+      {
+        "id": "contexte-en-couches-check-01",
+        "text": "Que représente le préfixe numérique d'un fichier de contexte ?",
+        "choices": [
+          "Son ordre de priorité dans la pile",
+          "Sa taille maximale",
+          "Le CLI auquel il est destiné",
+          "Sa version"
+        ],
+        "answer": 0,
+        "explanation": "Les fichiers sont combinés dans un ordre de priorité fixe, matérialisé par le préfixe numérique.",
+        "source": "docs/concepts.md"
+      },
+      {
+        "id": "contexte-en-couches-check-02",
+        "text": "Quel fichier correspond à la priorité 50 ?",
+        "choices": [
+          "`config/SOUL.md`",
+          "`config/teams/<TEAM>.md`",
+          "`config/PROFILE.md`",
+          "`config/TOOLS.md`"
+        ],
+        "answer": 1,
+        "explanation": "La priorité 50 porte les pratiques et normes d'équipe.",
+        "source": "docs/concepts.md"
+      },
+      {
+        "id": "contexte-en-couches-check-03",
+        "text": "Comment les fichiers de contexte sont-ils déployés par défaut ?",
+        "choices": [
+          "Par lien symbolique",
+          "Par téléchargement distant",
+          "Par copie, et non par lien symbolique",
+          "Par fusion dans le dépôt"
+        ],
+        "answer": 2,
+        "explanation": "La copie évite l'empoisonnement du contexte par une branche malveillante.",
+        "source": "README.md"
+      }
+    ]
+  },
+  {
+    "id": "fondations",
+    "level": "team",
+    "title": "Mettre en place les fondations",
+    "summary": "De l'installation des prérequis au contexte déployé dans chaque CLI.",
+    "diagram": "foundation",
+    "body": [
+      {
+        "type": "p",
+        "text": "Mettre en place CrewRig sur son poste se fait en cinq étapes, représentées sur le schéma ci-dessous."
+      },
+      {
+        "type": "ol",
+        "items": [
+          "Prérequis : `git`, Node.js 24 ou plus, Task et les CLI que vous utilisez (Gemini CLI, Claude Code, GitHub Copilot CLI, Antigravity CLI). La liste complète des outils est dans la section Prerequisites du `README.md`.",
+          "Cloner le dépôt : `git clone git@github.com:crewrig/crewrig.git` puis `cd crewrig`. Une organisation fait plutôt un fork ou un clone poussé vers son propre dépôt, comme décrit dans le guide d'adoption.",
+          "Préparer `config/` : générer votre profil personnel (`config/PROFILE.md`) avec la commande `/init-personal-profile`, personnaliser l'identité de l'agent (`config/SOUL.md`) avec `/init-soul` ; pour une organisation, copier `config/ORGANIZATION.md.template`, `config/TOOLS.md.template` et `crewrig.config.toml.template` puis les compléter.",
+          "Lancer le setup du CLI voulu : `task setup-claude-interactive`, `task setup-gemini-interactive`, `task setup-copilot-interactive` ou `task setup-antigravity-interactive`. Le script copie les fichiers partagés puis demande l'équipe, l'expertise et le niveau d'expérience.",
+          "Vérifier le déploiement pour chaque CLI : les fichiers numérotés doivent être présents dans le répertoire cible (`~/.claude/rules/`, `~/.gemini/`, `~/.copilot/instructions/`, etc.)."
+        ]
+      },
+      {
+        "type": "note",
+        "text": "Le guide d'adoption ajoute, avant le déploiement, la compilation des composants : `node scripts/lib/node-floor-guard.js`, puis `node scripts/build-components.ts`, en deux commandes séparées."
+      }
+    ],
+    "sources": [
+      "README.md",
+      "docs/adoption-guide.md"
+    ],
+    "check": [
+      {
+        "id": "fondations-check-01",
+        "text": "Quelle version minimale de Node.js faut-il pour les scripts de setup et de build ?",
+        "choices": [
+          "Node.js 18",
+          "Node.js 20",
+          "Node.js 24 ou plus",
+          "Node.js 22"
+        ],
+        "answer": 2,
+        "explanation": "Les setups sont des entrées TypeScript qui exigent Node.js 24 ou plus.",
+        "source": "README.md"
+      },
+      {
+        "id": "fondations-check-02",
+        "text": "Quelle commande lance l'installation interactive pour Claude Code ?",
+        "choices": [
+          "`task setup-claude-interactive`",
+          "`task build-claude`",
+          "`claude --install`",
+          "`task init-claude`"
+        ],
+        "answer": 0,
+        "explanation": "Le script copie les fichiers partagés puis demande l'équipe, l'expertise et le niveau d'expérience.",
+        "source": "README.md"
+      },
+      {
+        "id": "fondations-check-03",
+        "text": "Dans quel répertoire Claude Code reçoit-il les fichiers de contexte déployés ?",
+        "choices": [
+          "`~/.gemini/`",
+          "`~/.copilot/instructions/`",
+          "`~/.claude/rules/`",
+          "`.claude/skills/`"
+        ],
+        "answer": 2,
+        "explanation": "Le setup de Claude Code déploie vers `~/.claude/rules/`.",
+        "source": "docs/adoption-guide.md"
+      }
+    ],
+    "checklist": [
+      {
+        "id": "fondations-clone",
+        "text": "Cloner le dépôt CrewRig.",
+        "command": "git clone git@github.com:crewrig/crewrig.git",
+        "source": "README.md"
+      },
+      {
+        "id": "fondations-cd",
+        "text": "Entrer dans le dépôt cloné.",
+        "command": "cd crewrig",
+        "source": "README.md"
+      },
+      {
+        "id": "fondations-profil",
+        "text": "Générer votre profil personnel (pour un autre CLI, utiliser la commande équivalente du README).",
+        "command": "claude /init-personal-profile",
+        "source": "README.md"
+      },
+      {
+        "id": "fondations-soul",
+        "text": "Personnaliser l'identité de l'agent.",
+        "command": "claude /init-soul",
+        "source": "README.md"
+      },
+      {
+        "id": "fondations-garde-node",
+        "text": "Vérifier la version de Node.js avant la compilation, comme étape distincte.",
+        "command": "node scripts/lib/node-floor-guard.js",
+        "source": "docs/adoption-guide.md"
+      },
+      {
+        "id": "fondations-build",
+        "text": "Compiler les composants, en seconde étape distincte.",
+        "command": "node scripts/build-components.ts",
+        "source": "docs/adoption-guide.md"
+      },
+      {
+        "id": "fondations-setup",
+        "text": "Lancer l'installation interactive du CLI voulu (équipe, expertise, niveau).",
+        "command": "task setup-claude-interactive",
+        "source": "README.md"
+      },
+      {
+        "id": "fondations-verifier",
+        "text": "Vérifier que les fichiers numérotés sont présents dans le répertoire cible, `~/.claude/rules/` pour Claude Code (aucune commande à exécuter).",
+        "source": "docs/adoption-guide.md"
+      }
+    ]
+  },
+  {
+    "id": "nouveau-projet",
+    "level": "team",
+    "title": "Démarrer un nouveau projet avec CrewRig",
+    "summary": "Du ticket à la fusion : le parcours d'un changement non trivial.",
+    "diagram": "new-project",
+    "body": [
+      {
+        "type": "p",
+        "text": "Tout travail non trivial suit le même parcours, rendu sur le schéma ci-dessous. Chaque étape a un garde-fou documenté dans `AGENTS.md`."
+      },
+      {
+        "type": "ol",
+        "items": [
+          "Une issue : elle existe avant toute modification de fichier. Elle sert aussi de journal de bord (règle A).",
+          "`task -x ticket-pickup -- --issue <N>` : vérifie que le ticket est libre ou à vous. En cas de code de sortie non nul, on s'arrête.",
+          "Un worktree dédié : `git worktree add -b <nom-de-branche> .worktrees/<id-du-ticket> crewrig/main`. Toutes les modifications se font dans `.worktrees/<id-du-ticket>/`.",
+          "SPECS : une spécification dans `specs/`, livrée seule dans sa PR de spécification (branche `spec/<NNNN>-<slug>`) et fusionnée avant toute branche d'implémentation.",
+          "PLAN : un plan (le comment) publié en commentaire de l'issue, relu puis approuvé selon le mode d'interaction.",
+          "DEV : implémentation sur la branche `<préfixe>/<NNNN>-<slug>` et ouverture d'une PR, CI verte.",
+          "REVIEW : relecture indépendante ; la boucle se poursuit jusqu'à une passe sans aucun constat. L'agent demande ensuite la permission de l'utilisateur avant de fusionner, puis ferme l'issue."
+        ]
+      },
+      {
+        "type": "note",
+        "text": "Pour utiliser un composant CrewRig sur un autre projet : `task install-claude-component TYPE=claude-skills NAME=<nom>` (Claude Code) ou `task install-component TYPE=skills NAME=<nom>` (Gemini CLI)."
+      }
+    ],
+    "sources": [
+      "AGENTS.md",
+      "docs/spec-pr-workflow.md",
+      "docs/ticket-ownership.md",
+      "README.md"
+    ],
+    "check": [
+      {
+        "id": "nouveau-projet-check-01",
+        "text": "Que faut-il réunir avant de modifier le moindre fichier ?",
+        "choices": [
+          "Une issue, une branche de fonctionnalité et un worktree dédié",
+          "Une approbation écrite du mainteneur",
+          "Une PR de spécification déjà ouverte",
+          "Une version publiée"
+        ],
+        "answer": 0,
+        "explanation": "La garde pré-édition exige ces trois conditions.",
+        "source": "AGENTS.md"
+      },
+      {
+        "id": "nouveau-projet-check-02",
+        "text": "Que vérifie `task -x ticket-pickup -- --issue <N>` ?",
+        "choices": [
+          "Que la CI est verte",
+          "Que le ticket est libre ou vous appartient",
+          "Que la spécification est approuvée",
+          "Que la branche est à jour"
+        ],
+        "answer": 1,
+        "explanation": "Le contrôle de propriété s'exécute avant toute branche, tout identifiant de spécification ou tout worktree ; on s'arrête sur un code de sortie non nul.",
+        "source": "docs/ticket-ownership.md"
+      },
+      {
+        "id": "nouveau-projet-check-03",
+        "text": "Quand la PR de spécification est-elle fusionnée ?",
+        "choices": [
+          "Après la branche d'implémentation",
+          "En même temps que l'implémentation",
+          "Jamais, la spécification reste dans l'issue",
+          "Avant toute branche d'implémentation"
+        ],
+        "answer": 3,
+        "explanation": "La spécification livrée seule dans sa PR est fusionnée avant l'ouverture de la branche d'implémentation.",
+        "source": "docs/spec-pr-workflow.md"
+      }
+    ],
+    "checklist": [
+      {
+        "id": "nouveau-projet-issue",
+        "text": "S'assurer qu'une issue existe pour le travail ; elle sert aussi de journal de bord (aucune commande à exécuter).",
+        "source": "AGENTS.md"
+      },
+      {
+        "id": "nouveau-projet-pickup",
+        "text": "Vérifier que le ticket est libre ou à vous ; s'arrêter sur tout code de sortie non nul.",
+        "command": "task -x ticket-pickup -- --issue <N>",
+        "source": "docs/ticket-ownership.md"
+      },
+      {
+        "id": "nouveau-projet-worktree",
+        "text": "Créer la branche et le worktree dédié du ticket ; toutes les modifications se font dedans.",
+        "command": "git worktree add -b <branch-name> .worktrees/<ticket-id> crewrig/main",
+        "source": "AGENTS.md"
+      },
+      {
+        "id": "nouveau-projet-specs",
+        "text": "Rédiger la spécification dans `specs/` et la livrer seule dans sa PR de spécification, branche `spec/<NNNN>-<slug>`, à fusionner avant toute branche d'implémentation (aucune commande à exécuter).",
+        "source": "AGENTS.md"
+      },
+      {
+        "id": "nouveau-projet-plan",
+        "text": "Publier le plan en commentaire de l'issue puis le faire relire (aucune commande à exécuter).",
+        "source": "AGENTS.md"
+      },
+      {
+        "id": "nouveau-projet-dev",
+        "text": "Implémenter sur la branche `<prefix>/<NNNN>-<slug>` puis ouvrir la PR (aucune commande à exécuter).",
+        "source": "AGENTS.md"
+      },
+      {
+        "id": "nouveau-projet-review",
+        "text": "Poursuivre la relecture jusqu'à une passe sans aucun constat (aucune commande à exécuter).",
+        "source": "AGENTS.md"
+      },
+      {
+        "id": "nouveau-projet-merge",
+        "text": "Demander la permission de l'utilisateur avant de fusionner, puis fermer l'issue (aucune commande à exécuter).",
+        "source": "docs/logbook-issues.md"
+      }
+    ]
+  },
+  {
+    "id": "memoire",
+    "level": "team",
+    "title": "La mémoire partagée",
+    "summary": "Trois paliers, dont MemPalace qui voyage entre sessions et entre outils.",
+    "body": [
+      {
+        "type": "p",
+        "text": "CrewRig organise la mémoire en trois paliers pour que ce qu'un agent apprend persiste et circule d'un outil à l'autre."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Palier 1, Sequential Thinking : mémoire de travail, éphémère, limitée à la session.",
+          "Palier 2, MemPalace : mémoire d'agent persistante, en lecture et écriture libres, partagée entre les quatre CLI.",
+          "Palier 3, Obsidian : base de connaissances de l'utilisateur, en lecture libre ; l'écriture exige son consentement."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Au début de chaque session, l'agent exécute un balayage déterministe : calcul du nom du projet, `mempalace_status`, recherche des tâches en cours (`[TASK:ongoing]`) dans la salle `task-handoff` de l'aile du projet, journal personnel puis graphe de connaissances. En fin de session, il met à jour le tiroir de reprise et écrit une entrée de journal."
+      },
+      {
+        "type": "note",
+        "text": "Un agent appelle MemPalace par les outils MCP `mempalace_*`, jamais par la commande shell. En cas d'erreur `-32001`, la première étape est `task mempalace:status`."
+      }
+    ],
+    "sources": [
+      "docs/concepts.md",
+      "artifacts/core/rules/60-tools.md"
+    ],
+    "check": [
+      {
+        "id": "memoire-check-01",
+        "text": "Quel palier de mémoire est éphémère et limité à la session ?",
+        "choices": [
+          "Sequential Thinking",
+          "MemPalace",
+          "Obsidian",
+          "Le journal de bord"
+        ],
+        "answer": 0,
+        "explanation": "Sequential Thinking est la mémoire de travail du palier 1.",
+        "source": "docs/concepts.md"
+      },
+      {
+        "id": "memoire-check-02",
+        "text": "Comment un agent appelle-t-il MemPalace depuis son raisonnement ?",
+        "choices": [
+          "Par la commande shell `mempalace`",
+          "Par les outils MCP `mempalace_*`",
+          "Par un appel HTTP direct",
+          "Par un fichier partagé"
+        ],
+        "answer": 1,
+        "explanation": "Les appels passent par le serveur MCP, jamais par la commande shell.",
+        "source": "artifacts/core/rules/60-tools.md"
+      },
+      {
+        "id": "memoire-check-03",
+        "text": "Quelle est la première étape de diagnostic face à l'erreur `-32001` ?",
+        "choices": [
+          "Redémarrer la machine",
+          "Supprimer le palais",
+          "Exécuter `task mempalace:status`",
+          "Relancer la compilation"
+        ],
+        "answer": 2,
+        "explanation": "Cette commande permet de distinguer une machine à moitié convertie d'une collision entre pairs.",
+        "source": "artifacts/core/rules/60-tools.md"
+      }
+    ]
+  },
+  {
+    "id": "skills-agents-build",
+    "level": "contributor",
+    "title": "Skills, agents et build",
+    "summary": "Écrire une fois, compiler pour tous les outils.",
+    "body": [
+      {
+        "type": "p",
+        "text": "Skills, agents et commandes sont rédigés une seule fois dans `artifacts/`, sous forme d'un fichier Markdown avec en-tête YAML ; `scripts/build-components.ts` génère ensuite les sorties de chaque outil."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Une skill : `<palier>/skills/<nom>/SKILL.md`.",
+          "Un agent : `<palier>/agents/<nom>/AGENT.md`.",
+          "Une commande : `<palier>/commands/<nom>.md`.",
+          "Champs d'en-tête obligatoires : `name`, `description` et `type`."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Les paliers de `artifacts/` disent qui possède quoi : `core/` et `library/` appartiennent à l'amont (`library/` est déployé au niveau utilisateur), `community/` et `org/` appartiennent à l'organisation adoptante."
+      },
+      {
+        "type": "p",
+        "text": "La compilation se fait en deux commandes séparées : `node scripts/lib/node-floor-guard.js`, puis `node scripts/build-components.ts` (Node.js 24 minimum). Les sorties sont `.claude/`, `.gemini/`, `.github/` et `.agents/`, qu'on ne modifie jamais à la main."
+      },
+      {
+        "type": "note",
+        "text": "Modifier une skill ou un agent déjà livré sur `main` impose d'incrémenter `metadata.provenance.version` dans le même diff. Un composant neuf démarre à `1.0.0` et n'est pas incrémenté dans sa branche."
+      }
+    ],
+    "sources": [
+      "docs/authoring.md",
+      "docs/adoption-guide.md",
+      "docs/version-bump-convention.md",
+      "AGENTS.md"
+    ],
+    "check": [
+      {
+        "id": "skills-agents-build-check-01",
+        "text": "Quel est le nom du fichier source d'une skill ?",
+        "choices": [
+          "`AGENT.md`",
+          "`SKILL.md`",
+          "`README.md`",
+          "`skill.yaml`"
+        ],
+        "answer": 1,
+        "explanation": "Une skill se rédige dans `<palier>/skills/<nom>/SKILL.md`.",
+        "source": "docs/authoring.md"
+      },
+      {
+        "id": "skills-agents-build-check-02",
+        "text": "Peut-on corriger à la main une sortie générée dans `.claude/` ?",
+        "choices": [
+          "Oui, si on la committe aussi",
+          "Oui, uniquement pour les agents",
+          "Non : on modifie la source dans `artifacts/` puis on relance le build",
+          "Oui, le build la préserve"
+        ],
+        "answer": 2,
+        "explanation": "Les sorties générées ne se modifient jamais à la main.",
+        "source": "docs/adoption-guide.md"
+      },
+      {
+        "id": "skills-agents-build-check-03",
+        "text": "Que doit contenir un diff qui modifie une skill déjà livrée sur `main` ?",
+        "choices": [
+          "Une nouvelle PR de spécification",
+          "Un incrément de `metadata.provenance.version`",
+          "La suppression de l'ancienne version",
+          "Un changement de nom"
+        ],
+        "answer": 1,
+        "explanation": "La version doit être incrémentée dans le même diff ; la CI le vérifie.",
+        "source": "docs/version-bump-convention.md"
+      }
+    ]
+  },
+  {
+    "id": "cycle-sdd",
+    "level": "team",
+    "title": "Le cycle de vie SDD",
+    "summary": "SPECS, PLAN, DEV, REVIEW, avec une boucle rétroactive qui renvoie chaque constat vers l'étape adaptée.",
+    "diagram": "sdd",
+    "body": [
+      {
+        "type": "p",
+        "text": "Tout ticket non trivial suit le cycle SPECS → PLAN → DEV → REVIEW. La revue boucle vers l'étape qui correspond à la classe de chaque constat : `tech` vers DEV, `arch` vers PLAN, `spec` vers SPECS."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Le cycle ne se termine que lorsqu'une passe de REVIEW complète ne produit aucun constat, avec un verdict APPROVE et une CI verte.",
+          "La boucle s'arrête après cinq itérations sans terminaison et l'utilisateur est alors alerté.",
+          "En cas de doute entre deux classes, on retient la plus en amont.",
+          "Quatre paliers de complexité règlent l'équipe : trivial, small, standard et large."
+        ]
+      },
+      {
+        "type": "note",
+        "text": "La section « Cycle de vie SDD » du menu détaille les classes de constats, la règle de terminaison et les paliers de complexité."
+      }
+    ],
+    "sources": [
+      "docs/adr/0010-spec-plan-review-lifecycle.md",
+      "docs/retroactive-loop.md",
+      "docs/lifecycle-diagram.md"
+    ],
+    "check": [
+      {
+        "id": "cycle-sdd-check-01",
+        "text": "Dans quel ordre s'enchaînent les étapes du cycle de vie ?",
+        "choices": [
+          "PLAN, SPECS, DEV, REVIEW",
+          "DEV, REVIEW, SPECS, PLAN",
+          "SPECS, DEV, PLAN, REVIEW",
+          "SPECS, PLAN, DEV, REVIEW"
+        ],
+        "answer": 3,
+        "explanation": "Tout ticket non trivial suit SPECS, PLAN, DEV puis REVIEW.",
+        "source": "docs/adr/0010-spec-plan-review-lifecycle.md"
+      },
+      {
+        "id": "cycle-sdd-check-02",
+        "text": "Vers quelle étape un constat de classe `arch` renvoie-t-il ?",
+        "choices": [
+          "SPECS",
+          "PLAN",
+          "DEV",
+          "Nulle part"
+        ],
+        "answer": 1,
+        "explanation": "`tech` renvoie vers DEV, `arch` vers PLAN et `spec` vers SPECS.",
+        "source": "docs/retroactive-loop.md"
+      },
+      {
+        "id": "cycle-sdd-check-03",
+        "text": "Quand le cycle de vie se termine-t-il ?",
+        "choices": [
+          "Quand la CI est verte",
+          "Quand le développeur le décide",
+          "Après cinq itérations",
+          "Quand une passe de REVIEW complète ne produit aucun constat"
+        ],
+        "answer": 3,
+        "explanation": "La terminaison exige une passe de REVIEW sans constat, avec un verdict APPROVE et une CI verte.",
+        "source": "docs/adr/0010-spec-plan-review-lifecycle.md"
+      }
+    ]
+  },
+  {
+    "id": "git-pr-logbook",
+    "level": "team",
+    "title": "Git, PR et journaux de bord",
+    "summary": "Les règles qui gardent l'historique lisible et le travail traçable.",
+    "body": [
+      {
+        "type": "ul",
+        "items": [
+          "`main` est protégée : pas de push direct, tout passe par une branche de fonctionnalité et une Pull Request.",
+          "Les branches d'implémentation s'appellent `<préfixe>/<NNNN>-<slug>` avec `feat/`, `fix/`, `docs/` ou `refactor/`.",
+          "Gitmoji pour les commits, les titres d'issue et les titres de PR : `<emoji> <description courte>`, jamais de préfixe `feat:`.",
+          "La PR de spécification est fusionnée avant que la branche d'implémentation soit créée, et ne contient qu'un seul fichier de spécification.",
+          "Jamais de fusion sans demander la permission formelle de l'utilisateur, juste avant l'exécution.",
+          "Avant de fusionner, la branche est à jour avec `main` et les tests repassent sur l'état rebasé."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Chaque PR est ancrée à un journal de bord sur GitHub, selon trois règles :"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Règle A : une issue de fonctionnalité EST son propre journal de bord ; on commente directement dessus.",
+          "Règle B : un commentaire à chaque transition d'étape, avec une puce par obstacle, décision ou rebase, jamais regroupé en fin de travail.",
+          "Règle C : on ferme l'issue immédiatement après la fusion."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Le corps d'une PR comporte : un but en deux phrases, « How to read this PR? », « How to test this PR? » et « Detailed description (for agents) »."
+      }
+    ],
+    "sources": [
+      "AGENTS.md",
+      "docs/logbook-issues.md",
+      "docs/spec-pr-workflow.md",
+      "docs/pr-format.md"
+    ],
+    "check": [
+      {
+        "id": "git-pr-logbook-check-01",
+        "text": "Peut-on pousser directement sur la branche `main` ?",
+        "choices": [
+          "Oui, pour les petites corrections",
+          "Non : tout passe par une branche de fonctionnalité et une Pull Request",
+          "Oui, avec l'accord d'un relecteur",
+          "Oui, hors des heures ouvrées"
+        ],
+        "answer": 1,
+        "explanation": "`main` est protégée : pas de push direct.",
+        "source": "AGENTS.md"
+      },
+      {
+        "id": "git-pr-logbook-check-02",
+        "text": "Que dit la règle C des journaux de bord ?",
+        "choices": [
+          "Commenter uniquement à la fin du travail",
+          "Ne jamais fermer l'issue",
+          "Fermer l'issue immédiatement après la fusion",
+          "Créer un journal par commit"
+        ],
+        "answer": 2,
+        "explanation": "L'issue est fermée dès la fusion.",
+        "source": "docs/logbook-issues.md"
+      },
+      {
+        "id": "git-pr-logbook-check-03",
+        "text": "Quelle convention de nommage s'applique aux commits, titres d'issue et titres de PR ?",
+        "choices": [
+          "Conventional commits (`feat:`)",
+          "Gitmoji : `<emoji> <description courte>`",
+          "Numéro de ticket seul",
+          "Aucune convention"
+        ],
+        "answer": 1,
+        "explanation": "Gitmoji est la seule convention ; les préfixes comme `feat:` sont proscrits.",
+        "source": "AGENTS.md"
+      }
+    ]
+  },
+  {
+    "id": "boucle-harness",
+    "level": "contributor",
+    "title": "La boucle de feedback du harness",
+    "summary": "Transformer les frictions rencontrées en améliorations livrées.",
+    "body": [
+      {
+        "type": "p",
+        "text": "Quand un agent heurte une aspérité (un prompt trompeur, un outil qui se comporte mal, un format qui casse l'analyse), ce signal doit atteindre les mainteneurs du système. La boucle comporte quatre étapes :"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "Étiqueter : l'agent invoque la skill `harness-report` dès qu'un signal de reconnaissance se déclenche ; l'étiquette est enregistrée dans l'aile globale `harness-friction`.",
+          "Regrouper : la skill `harness-curator` regroupe les étiquettes par sous-catégorie et ouvre une issue descriptive par groupe.",
+          "Corriger : les issues sont traitées par le workflow habituel de branches et de PR.",
+          "Réinstaller : après livraison, on reconstruit et on réinstalle ; l'incrément de `metadata.provenance.version` signale la nouvelle version."
+        ]
+      },
+      {
+        "type": "p",
+        "text": "Les signaux de reconnaissance sont : le retour négatif de l'utilisateur, le contournement d'une autre skill, la surprise d'un outil pour la deuxième fois, la lacune de processus et la friction de garde-fou. L'étiquetage est « fire-and-forget » : on étiquette puis on reprend sa tâche."
+      },
+      {
+        "type": "note",
+        "text": "Les frictions sur les composants amont (`core`, `library`) vont toujours vers `canonical_repo` ; celles des composants de l'organisation (`community`, `org`) vont vers `feedback_repo`."
+      }
+    ],
+    "sources": [
+      "docs/harness-engineering.md",
+      "docs/concepts.md",
+      "docs/adoption-guide.md"
+    ],
+    "check": [
+      {
+        "id": "boucle-harness-check-01",
+        "text": "Quelle skill un agent invoque-t-il pour étiqueter une friction ?",
+        "choices": [
+          "`harness-curator`",
+          "`harness-report`",
+          "`pr-reviewer`",
+          "`user-validate`"
+        ],
+        "answer": 1,
+        "explanation": "`harness-report` est l'implémentation unique du protocole d'étiquetage.",
+        "source": "docs/harness-engineering.md"
+      },
+      {
+        "id": "boucle-harness-check-02",
+        "text": "Que signifie que l'étiquetage est « fire-and-forget » ?",
+        "choices": [
+          "On étiquette puis on reprend sa tâche, sans attendre d'accusé de réception",
+          "On étiquette uniquement en fin de session",
+          "On supprime l'étiquette une fois lue",
+          "On n'étiquette qu'avec l'accord de l'utilisateur"
+        ],
+        "answer": 0,
+        "explanation": "Le signal part sans bloquer le travail en cours.",
+        "source": "docs/harness-engineering.md"
+      }
+    ]
+  },
+  {
+    "id": "parite-multi-cli",
+    "level": "contributor",
+    "title": "La parité multi-CLI",
+    "summary": "Quatre outils, une seule promesse : pas d'asymétrie silencieuse.",
+    "body": [
+      {
+        "type": "p",
+        "text": "CrewRig implémente chaque fonctionnalité de façon symétrique sur Gemini CLI, Claude Code, GitHub Copilot CLI et Antigravity CLI. Quand une fonctionnalité ne peut pas être reproduite sur un outil, l'écart doit être justifié par une preuve concrète que le mécanisme n'existe pas dans l'outil visé."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "La matrice `docs/cli-matrix.md` recense chaque point d'intégration propre à un CLI.",
+          "Elle est générée à partir de `docs/cli-matrix/` : on modifie les sources puis on lance `task cli-matrix:build`.",
+          "Une PR qui touche un point d'intégration met à jour la matrice dans le même diff.",
+          "Racines de configuration de workspace : `.claude/`, `.gemini/`, `.github/` (réparti entre `copilot/`, `skills/` et `agents/`) et `.agents/`."
+        ]
+      }
+    ],
+    "sources": [
+      "docs/concepts.md",
+      "docs/cli-matrix.md",
+      "AGENTS.md"
+    ],
+    "check": [
+      {
+        "id": "parite-multi-cli-check-01",
+        "text": "Comment régénère-t-on `docs/cli-matrix.md` ?",
+        "choices": [
+          "En l'éditant directement",
+          "Avec `task cli-matrix:build` après modification des sources",
+          "Avec `task build-components`",
+          "Il est régénéré à chaque commit"
+        ],
+        "answer": 1,
+        "explanation": "La matrice est générée depuis `docs/cli-matrix/`.",
+        "source": "docs/cli-matrix.md"
+      },
+      {
+        "id": "parite-multi-cli-check-02",
+        "text": "Que faut-il fournir pour accepter un écart de parité sur un CLI ?",
+        "choices": [
+          "L'accord oral de l'équipe",
+          "Une preuve concrète que le mécanisme n'existe pas dans l'outil visé",
+          "Un ticket ouvert",
+          "Rien, l'écart est toléré"
+        ],
+        "answer": 1,
+        "explanation": "Un écart doit être justifié par une preuve concrète.",
+        "source": "docs/concepts.md"
+      }
+    ]
+  },
+  {
+    "id": "recapitulatif",
+    "level": "team",
+    "title": "Récapitulatif des bonnes pratiques",
+    "summary": "Les réflexes à garder en tête au quotidien.",
+    "body": [
+      {
+        "type": "ul",
+        "items": [
+          "Lire les règles de contexte avant d'agir : `AGENTS.md` fait foi pour tous les agents.",
+          "Écrire les composants à un seul endroit, `artifacts/`, puis relancer le build ; ne jamais éditer les sorties générées.",
+          "Un ticket, une branche, un worktree : pas de modification de fichier sans les trois.",
+          "La spécification d'abord, dans sa propre PR, puis le plan, puis le code.",
+          "Une revue sans aucun constat est la seule condition de terminaison.",
+          "Un commentaire de journal de bord à chaque transition d'étape, et on ferme l'issue après la fusion.",
+          "Ne jamais fusionner sans la permission formelle de l'utilisateur.",
+          "Étiqueter les frictions dès qu'un signal se déclenche, dans le doute aussi.",
+          "Maintenir la parité : un écart sur un CLI se prouve et se documente dans la matrice."
+        ]
+      },
+      {
+        "type": "note",
+        "text": "Terminez en rejouant les quiz : cinq étoiles signifient que toutes les réponses étaient justes."
+      }
+    ],
+    "sources": [
+      "AGENTS.md",
+      "docs/introduction.md"
+    ],
+    "check": [
+      {
+        "id": "recapitulatif-check-01",
+        "text": "Quelle est la seule condition de terminaison du cycle de vie ?",
+        "choices": [
+          "Une CI verte",
+          "Une approbation orale",
+          "Une revue complète sans aucun constat",
+          "Cinq itérations de revue"
+        ],
+        "answer": 2,
+        "explanation": "Une passe de REVIEW sans constat termine le cycle.",
+        "source": "AGENTS.md"
+      },
+      {
+        "id": "recapitulatif-check-02",
+        "text": "Que faut-il obtenir juste avant de fusionner une PR ?",
+        "choices": [
+          "La permission formelle de l'utilisateur",
+          "Un second commit",
+          "Un tag de version",
+          "Rien si la CI est verte"
+        ],
+        "answer": 0,
+        "explanation": "On ne fusionne jamais sans demander la permission formelle de l'utilisateur, juste avant l'exécution.",
+        "source": "AGENTS.md"
+      },
+      {
+        "id": "recapitulatif-check-03",
+        "text": "Quand étiqueter une friction ?",
+        "choices": [
+          "Une fois par semaine",
+          "Seulement si l'utilisateur le demande",
+          "Dès qu'un signal de reconnaissance se déclenche, et dans le doute aussi",
+          "Jamais pour les composants de l'organisation"
+        ],
+        "answer": 2,
+        "explanation": "Mieux vaut une étiquette de trop qu'une friction silencieuse.",
+        "source": "docs/harness-engineering.md"
+      }
+    ]
+  }
+]

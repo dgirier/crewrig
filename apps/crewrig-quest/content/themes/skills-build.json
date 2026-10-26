@@ -1,0 +1,147 @@
+{
+  "id": "skills-build",
+  "title": "Skills, agents et build",
+  "description": "La source unique `artifacts/`, les trois types de composants et la compilation vers quatre CLI.",
+  "questions": [
+    {
+      "id": "skills-build-01",
+      "level": "team",
+      "text": "Quels sont les trois types de composants du pipeline à source unique ?",
+      "choices": [
+        "Service, contrôleur et dépôt",
+        "Hook, thème et politique uniquement",
+        "Image, volume et réseau",
+        "Skill, agent et commande"
+      ],
+      "answer": 3,
+      "explanation": "Skill, agent et commande partagent le pipeline : un fichier Markdown avec en-tête YAML, compilé pour chaque CLI.",
+      "source": "docs/authoring.md"
+    },
+    {
+      "id": "skills-build-02",
+      "level": "team",
+      "text": "Quels sont les noms de fichiers source d'une skill et d'un agent ?",
+      "choices": [
+        "`skill.yml` et `agent.yml`",
+        "`README.md` et `CLAUDE.md`",
+        "`SKILL.md` et `AGENT.md`",
+        "`index.ts` pour les deux"
+      ],
+      "answer": 2,
+      "explanation": "Une skill vit dans `<palier>/skills/<nom>/SKILL.md`, un agent dans `<palier>/agents/<nom>/AGENT.md` et une commande dans `<palier>/commands/<nom>.md`.",
+      "source": "docs/authoring.md"
+    },
+    {
+      "id": "skills-build-03",
+      "level": "contributor",
+      "text": "Quels champs d'en-tête sont obligatoires pour tout composant ?",
+      "choices": [
+        "`title`, `author` et `license`",
+        "`name`, `description` et `type`",
+        "`id`, `version` et `owner`",
+        "`model`, `tools` et `temperature`"
+      ],
+      "answer": 1,
+      "explanation": "Trois champs universels sont requis ; les surcharges propres à un outil sont facultatives et le corps du prompt n'est jamais dupliqué.",
+      "source": "docs/authoring.md"
+    },
+    {
+      "id": "skills-build-04",
+      "level": "contributor",
+      "text": "Quel palier de `artifacts/` est déployé au niveau du répertoire utilisateur, pour toute la machine ?",
+      "choices": [
+        "`library/`",
+        "`core/`",
+        "`community/`",
+        "`org/`"
+      ],
+      "answer": 0,
+      "explanation": "`library/` regroupe la machinerie transverse (harness-report, harness-curator, user-validate) ; `core/` est déployé à la portée du projet.",
+      "source": "docs/layers.md"
+    },
+    {
+      "id": "skills-build-05",
+      "level": "team",
+      "text": "Quelle version minimale de Node.js le build exige-t-il ?",
+      "choices": [
+        "Node.js 16",
+        "Node.js 18",
+        "Node.js 20",
+        "Node.js 24"
+      ],
+      "answer": 3,
+      "explanation": "Le build s'exécute avec Node.js 24 ou plus ; un garde-fou (`scripts/lib/node-floor-guard.js`) s'exécute d'abord, dans une commande séparée.",
+      "source": "docs/adoption-guide.md"
+    },
+    {
+      "id": "skills-build-06",
+      "level": "team",
+      "text": "Où le build place-t-il les skills compilées pour Claude Code ?",
+      "choices": [
+        "Dans `~/.claude/rules/`",
+        "Dans `.agents/skills/`",
+        "Dans `.claude/skills/`",
+        "Dans `artifacts/core/`"
+      ],
+      "answer": 2,
+      "explanation": "Les sorties sont `.claude/` (Claude Code), `.gemini/` (Gemini CLI), `.github/` (Copilot CLI) et `.agents/` (Antigravity CLI).",
+      "source": "docs/adoption-guide.md"
+    },
+    {
+      "id": "skills-build-07",
+      "level": "contributor",
+      "text": "Peut-on corriger directement un fichier de `.claude/skills/` généré par le build ?",
+      "choices": [
+        "Oui, c'est le moyen normal de corriger une skill",
+        "Non : on modifie la source dans `artifacts/` puis on relance le build",
+        "Oui, mais seulement pour Gemini CLI",
+        "Non, ces fichiers sont en lecture seule au niveau du système de fichiers"
+      ],
+      "answer": 1,
+      "explanation": "Les répertoires de sortie sont des zones d'assemblage : la source de vérité reste `artifacts/`, sinon la modification serait écrasée au prochain build.",
+      "source": "docs/layers.md"
+    },
+    {
+      "id": "skills-build-08",
+      "level": "contributor",
+      "text": "Que doit contenir un diff qui modifie une skill déjà présente sur `main` ?",
+      "choices": [
+        "Une incrémentation de `metadata.provenance.version`",
+        "Un nouveau nom de fichier",
+        "Une copie de l'ancienne version",
+        "Un commentaire daté en tête de fichier"
+      ],
+      "answer": 0,
+      "explanation": "Le script `scripts/check-skill-versions.ts` s'exécute en CI et fait échouer la construction si une source livrée est modifiée sans bump de version.",
+      "source": "docs/version-bump-convention.md"
+    },
+    {
+      "id": "skills-build-09",
+      "level": "contributor",
+      "text": "Quelle version porte un composant tout juste créé sur une branche de fonctionnalité ?",
+      "choices": [
+        "`0.0.1`, puis `0.1.0` à la fusion",
+        "`1.0.0`, puis un bump à chaque correctif de la branche",
+        "Aucune : la version est ajoutée par la CI",
+        "`1.0.0`, sans bump tant que la branche n'est pas fusionnée"
+      ],
+      "answer": 3,
+      "explanation": "Les nouveaux composants démarrent à 1.0.0 et y restent : la version n'a de sens qu'une fois le composant livré sur `main`.",
+      "source": "docs/version-bump-convention.md"
+    },
+    {
+      "id": "skills-build-10",
+      "level": "contributor",
+      "text": "Comment une source d'agent exprime-t-elle le modèle dont son travail a besoin ?",
+      "choices": [
+        "Par le nom exact du modèle du fournisseur",
+        "Par une clé propre à chaque CLI",
+        "Par un profil de capacités dans `metadata.model`, jamais par un nom de modèle",
+        "Par une variable d'environnement"
+      ],
+      "answer": 2,
+      "explanation": "Un mapping propre à chaque cible décide, au build, vers quoi ce profil se résout ; la source reste indépendante du CLI.",
+      "source": "docs/concepts.md"
+    }
+  ]
+}

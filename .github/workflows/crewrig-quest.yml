@@ -1,0 +1,38 @@
+name: CrewRig Quest
+
+# Spec 0278: mirrors the `crewrig-quest` capability of ci/ci-capabilities.yml.
+on:
+  pull_request:
+    branches: [main, "release/**"]
+    paths:
+      - "apps/crewrig-quest/**"
+  push:
+    branches: [main, "release/**"]
+    paths:
+      - "apps/crewrig-quest/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  crewrig-quest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Validate the CrewRig Quest content
+        run: node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning apps/crewrig-quest/src/validate-content.ts
+      - name: Run the CrewRig Quest suites
+        run: node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --test apps/crewrig-quest/tests/stars.test.ts apps/crewrig-quest/tests/store.test.ts apps/crewrig-quest/tests/content.test.ts apps/crewrig-quest/tests/server.test.ts
+      - name: Cancel workflow on job failure
+        if: failure()
+        uses: ./.github/actions/cancel-on-failure
